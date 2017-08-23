@@ -12,10 +12,17 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    var stack: CoreDataStack? = nil
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        if let stack = CoreDataStack(modelName: "TouristDataModel") {
+            self.stack = stack
+        } else {
+            fatalError("Cannont instantiate data stack")
+        }
+        
         return true
     }
 

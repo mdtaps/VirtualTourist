@@ -13,4 +13,13 @@ struct Constants {
         static let Pin = "Pin"
         static let Photo = "Photo"
     }
+    
+    struct PinAttributeNames {
+        static let Latitude = "latitude"
+        static let Longitude = "longitude"
+    }
+    
+    struct PhotoAttributeNames {
+        static let Photo = "photo"
+    }
 }
