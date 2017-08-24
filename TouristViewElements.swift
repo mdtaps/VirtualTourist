@@ -12,7 +12,7 @@ import UIKit
 class DeleteModeLabel: UILabel {
     
     convenience init(view: UIView) {
-        let frame = CGRect(x: view.frame.maxX,
+        let frame = CGRect(x: view.frame.minX,
                            y: view.frame.maxY,
                            width: view.frame.width, height: 80 )
         
@@ -25,6 +25,7 @@ class DeleteModeLabel: UILabel {
         self.backgroundColor = .red
         self.textColor = .white
         self.textAlignment = .center
+        self.text = "Tap Pins To Delete"
     }
     
     required init?(coder aDecoder: NSCoder) {

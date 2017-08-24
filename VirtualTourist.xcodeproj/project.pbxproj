@@ -22,6 +22,7 @@
 		F4A283C61F4BEA2000F043EA /* Photo+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A283C21F4BEA2000F043EA /* Photo+CoreDataProperties.swift */; };
 		F4A283C81F4BECE700F043EA /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A283C71F4BECE700F043EA /* Constants.swift */; };
 		F4A283CE1F4EB05300F043EA /* TouristViewElements.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A283CD1F4EB05300F043EA /* TouristViewElements.swift */; };
+		F4A283D11F4EC61300F043EA /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A283D01F4EC61300F043EA /* Extensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -63,6 +64,7 @@
 		F4A283C21F4BEA2000F043EA /* Photo+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Photo+CoreDataProperties.swift"; path = "VirtualTourist/Photo+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		F4A283C71F4BECE700F043EA /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Constants.swift; path = ../Constants.swift; sourceTree = "<group>"; };
 		F4A283CD1F4EB05300F043EA /* TouristViewElements.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TouristViewElements.swift; sourceTree = "<group>"; };
+		F4A283D01F4EC61300F043EA /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -153,6 +155,7 @@
 				F4A283C01F4BEA2000F043EA /* Pin+CoreDataProperties.swift */,
 				F4A283C11F4BEA2000F043EA /* Photo+CoreDataClass.swift */,
 				F4A283C21F4BEA2000F043EA /* Photo+CoreDataProperties.swift */,
+				F4A283D01F4EC61300F043EA /* Extensions.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -311,6 +314,7 @@
 				F4A283C61F4BEA2000F043EA /* Photo+CoreDataProperties.swift in Sources */,
 				F4A283841F4BD84700F043EA /* AppDelegate.swift in Sources */,
 				F4A283CE1F4EB05300F043EA /* TouristViewElements.swift in Sources */,
+				F4A283D11F4EC61300F043EA /* Extensions.swift in Sources */,
 				F4A283C81F4BECE700F043EA /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

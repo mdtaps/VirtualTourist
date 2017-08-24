@@ -145,18 +145,17 @@ extension TravelLocationsViewController {
     
     func setupView() {
         
-        let DeleteModeBarHeight: CGFloat = 80
+        let shiftAmount: CGFloat = 80
         
         if inDeleteMode {
-            mapView.frame.origin.y -= DeleteModeBarHeight
-            deleteModeLabel.frame.origin.y -= DeleteModeBarHeight
+            mapView.frame.origin.y.shift(by: shiftAmount, inDirection: -)
+            deleteModeLabel.frame.origin.y.shift(by: shiftAmount, inDirection: -)
         } else {
-            mapView.frame.origin.y += DeleteModeBarHeight
-            deleteModeLabel.frame.origin.y -= DeleteModeBarHeight
-
+            mapView.frame.origin.y.shift(by: shiftAmount, inDirection: +)
+            deleteModeLabel.frame.origin.y.shift(by: shiftAmount, inDirection: +)
         }
     }
- }
+}
 
 extension TravelLocationsViewController: MKMapViewDelegate {
     
