@@ -11,9 +11,14 @@ import MapKit
 import CoreData
 
 class TravelLocationsViewController: UIViewController {
-
-    @IBOutlet weak var touristMapView: MKMapView!
+    
+    //MARK: Outlets
+    @IBOutlet weak var mapView: MKMapView!
     @IBOutlet var addPinGestureRecognizer: UILongPressGestureRecognizer!
+    
+    //Propeties
+    var deleteModeLabel = DeleteModeLabel()
+    var inDeleteMode = false
     
     var fetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>? {
         didSet {
@@ -47,34 +52,111 @@ class TravelLocationsViewController: UIViewController {
                                                               cacheName: nil)
         
         //Set up Map
-        touristMapView.delegate = self
+        mapView.delegate = self
         addPinGestureRecognizer.minimumPressDuration = 1
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+        
+        //Create label for alerting to delete mode
+        deleteModeLabel = DeleteModeLabel(view: view)
+        view.addSubview(deleteModeLabel)
     }
     
     @IBAction func addPin(_ gestureRecognizer: UIGestureRecognizer) {
         
         if gestureRecognizer.state == .began {
-            let touchPointInView = gestureRecognizer.location(in: touristMapView)
-            let coordinateOnMap = touristMapView.convert(touchPointInView, toCoordinateFrom: touristMapView)
+            let touchPointInView = gestureRecognizer.location(in: mapView)
+            let coordinateOnMap = mapView.convert(touchPointInView, toCoordinateFrom: mapView)
             
             let annotation = MKPointAnnotation()
             annotation.coordinate = coordinateOnMap
             
             if let context = fetchedResultsController?.managedObjectContext {
-                let pin = Pin(latitude: annotation.coordinate.latitude,
+                let _ = Pin(latitude: annotation.coordinate.latitude,
                               longitude: annotation.coordinate.longitude,
                               context: context)
             }
             
-            touristMapView.addAnnotation(annotation)
+            mapView.addAnnotation(annotation)
+        }
+    }
+    
+    @IBAction func editButtonPressed(_ sender: UIBarButtonItem) {
+        
+        toggleDeleteMode()
+    }
+    
+    func loadPins() {
+        var pins = [(Double, Double)]()
+        
+        let request = NSFetchRequest<Pin>(entityName: Constants.EntityNames.Pin)
+        
+        do {
+            guard let entities = try fetchedResultsController?.managedObjectContext.fetch(request) else {
+                throw NSError(domain: "loadPins", code: 1, userInfo: [NSLocalizedDescriptionKey: "Failed to load entities"])
+            }
+            
+            for entity in entities {
+                pins.append((entity.latitude, entity.longitude))
+            }
+        } catch let error as NSError {
+            dump(error)
+        }
+        
+        dropPins(arrayOf: pins)
+    }
+    
+    func dropPins(arrayOf pinCoordinates: [(Double, Double)]) {
+        
+        for coordinates in pinCoordinates {
+            
+            let (lat, lon) = coordinates
+            let annotation = MKPointAnnotation()
+            annotation.coordinate = CLLocationCoordinate2D(latitude: lat, longitude: lon)
+            
+            mapView.addAnnotation(annotation)
         }
     }
 }
+
+extension TravelLocationsViewController {
+    
+    func toggleDeleteMode() {
+        
+        inDeleteMode = !inDeleteMode
+        
+        setupMapGestures()
+        setupView()
+    }
+    
+    func setupMapGestures() {
+        
+        guard let recognizers = mapView.gestureRecognizers else {
+            print("Error finding gesture recognizers in tourist map view")
+            return
+        }
+        
+        for recognizer in recognizers {
+            
+            if recognizer is UILongPressGestureRecognizer {
+                
+                recognizer.isEnabled = !inDeleteMode
+            }
+        }
+    }
+    
+    func setupView() {
+        
+        let DeleteModeBarHeight: CGFloat = 80
+        
+        if inDeleteMode {
+            mapView.frame.origin.y -= DeleteModeBarHeight
+            deleteModeLabel.frame.origin.y -= DeleteModeBarHeight
+        } else {
+            mapView.frame.origin.y += DeleteModeBarHeight
+            deleteModeLabel.frame.origin.y -= DeleteModeBarHeight
+
+        }
+    }
+ }
 
 extension TravelLocationsViewController: MKMapViewDelegate {
     
@@ -92,7 +174,20 @@ extension TravelLocationsViewController: MKMapViewDelegate {
         } else {
             pinObject?.annotation = annotation
         }
-        //TODO: Set up pin
         return pinObject
+    }
+    
+    func mapViewDidFinishRenderingMap(_ mapView: MKMapView, fullyRendered: Bool) {
+        
+        loadPins()
+    }
+    
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        
+        guard inDeleteMode else {
+            return
+        }
+        
+        //TODO: Delete pin and remove from context
     }
 }

@@ -10,7 +10,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Travel Locations View Controller-->
+        <!--Virtual Tourist-->
         <scene sceneID="tne-QT-ifu">
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="TravelLocationsViewController" customModule="VirtualTourist" customModuleProvider="target" sceneMemberID="viewController">
@@ -38,10 +38,16 @@
                             <constraint firstAttribute="trailingMargin" secondItem="qsX-5u-mQl" secondAttribute="trailing" constant="-16" id="g1h-IO-XIk"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="qX5-9A-wdN"/>
+                    <navigationItem key="navigationItem" title="Virtual Tourist" id="qX5-9A-wdN">
+                        <barButtonItem key="rightBarButtonItem" systemItem="edit" id="KGE-C9-d19">
+                            <connections>
+                                <action selector="editButtonPressed:" destination="BYZ-38-t0r" id="cWL-pw-zRz"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="addPinGestureRecognizer" destination="3kd-uB-pSS" id="h2E-ba-5Jk"/>
-                        <outlet property="touristMapView" destination="qsX-5u-mQl" id="Vpk-5U-8m3"/>
+                        <outlet property="mapView" destination="qsX-5u-mQl" id="ngt-8C-ovU"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
