@@ -173,25 +173,27 @@ extension TravelLocationsViewController {
             let annotation = MKPointAnnotation()
             annotation.coordinate = CLLocationCoordinate2D(latitude: lat, longitude: lon)
             
-            mapView.addAnnotation(annotation)
+//            mapView.addAnnotation(annotation)
         }
     }
 
     
-    func deletePin(_ annotation: MKAnnotationView) {
+    func deletePin(_ annotationView: MKAnnotationView) {
         
-        removePinFromStore()
-        deleteAnnotation(annotation)
-    }
-    
-    func deleteAnnotation(_ annotation: MKAnnotationView) {
+        if let context = fetchedResultsController?.managedObjectContext,
+           let pins = fetchedResultsController?.fetchedObjects as? [Pin]{
+            
+            for pin in pins {
+                
+                if pin.latitude == annotationView.annotation?.coordinate.latitude &&
+                   pin.longitude == annotationView.annotation?.coordinate.longitude {
+                    
+                    context.delete(pin)
+                    return
+                }
+            }
+        }
         
-        //TODO: Delete annotation from Map
-    }
-    
-    func removePinFromStore() {
-        
-        //TODO: Remove Pin from Store
     }
 }
 
@@ -225,12 +227,37 @@ extension TravelLocationsViewController: MKMapViewDelegate {
         
         switch inDeleteMode {
         case true:
-            
             deletePin(view)
             print("Not in delete mode")
+            
         case false:
             //TODO: Navigate to Tourist Photos
             print("Not in delete mode")
         }
     }
 }
+
+extension TravelLocationsViewController: NSFetchedResultsControllerDelegate {
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+        
+        guard let pin = anObject as? Pin else {
+            preconditionFailure("All changes in Map View Controller should be for Pins")
+        }
+        
+        switch type {
+        case .insert:
+            mapView.addAnnotation(pin)
+            
+        case .delete:
+            mapView.removeAnnotation(pin)
+            
+        case .update:
+            mapView.removeAnnotation(pin)
+            mapView.addAnnotation(pin)
+            
+        case .move:
+            fatalError("You can't move pins!")
+        }
+    }
+   }

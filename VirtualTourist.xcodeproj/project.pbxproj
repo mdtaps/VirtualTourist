@@ -65,6 +65,7 @@
 		F4A283C71F4BECE700F043EA /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Constants.swift; path = ../Constants.swift; sourceTree = "<group>"; };
 		F4A283CD1F4EB05300F043EA /* TouristViewElements.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TouristViewElements.swift; sourceTree = "<group>"; };
 		F4A283D01F4EC61300F043EA /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		F4A283D21F52A28500F043EA /* TouristDataModel 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "TouristDataModel 2.xcdatamodel"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -591,6 +592,7 @@
 		F4A283B31F4BE12600F043EA /* TouristDataModel.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				F4A283D21F52A28500F043EA /* TouristDataModel 2.xcdatamodel */,
 				F4A283B41F4BE12600F043EA /* TouristDataModel.xcdatamodel */,
 			);
 			currentVersion = F4A283B41F4BE12600F043EA /* TouristDataModel.xcdatamodel */;

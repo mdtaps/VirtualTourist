@@ -25,6 +25,9 @@
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="qsX-5u-mQl">
                                 <rect key="frame" x="0.0" y="64" width="375" height="603"/>
                                 <gestureRecognizers/>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="nRN-5J-st8" appends="YES" id="YzB-Bk-1Ob"/>
+                                </connections>
                             </mapView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -43,14 +46,14 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="longPressGestureRecognizer" destination="3kd-uB-pSS" id="QkH-8v-uhR"/>
+                        <outlet property="longPressGestureRecognizer" destination="nRN-5J-st8" id="pze-5l-50E"/>
                         <outlet property="mapView" destination="qsX-5u-mQl" id="ngt-8C-ovU"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
-                <pongPressGestureRecognizer allowableMovement="10" minimumPressDuration="0.5" id="3kd-uB-pSS">
+                <pongPressGestureRecognizer allowableMovement="10" minimumPressDuration="0.5" id="nRN-5J-st8">
                     <connections>
-                        <action selector="longPress:" destination="BYZ-38-t0r" id="Ze6-be-yVi"/>
+                        <action selector="longPress:" destination="BYZ-38-t0r" id="Z77-Bj-5P1"/>
                     </connections>
                 </pongPressGestureRecognizer>
             </objects>

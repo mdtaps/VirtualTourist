@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreData
+import MapKit
 
 @objc(Pin)
 public class Pin: NSManagedObject {
@@ -16,6 +17,7 @@ public class Pin: NSManagedObject {
         //Create entity to give Pin class access to its entities in Database
         if let entity = NSEntityDescription.entity(forEntityName: Constants.EntityNames.Pin, in: context) {
             self.init(entity: entity, insertInto: context)
+            
             self.latitude = latitude
             self.longitude = longitude
             
@@ -23,5 +25,17 @@ public class Pin: NSManagedObject {
             fatalError("Unable to find entity name!")
             
         }
+    }
+}
+
+extension Pin: MKAnnotation {
+    
+    //TODO: Figure out whether lat and lon need to be optional, and update model version
+    public var coordinate: CLLocationCoordinate2D {
+        
+        let latDegrees = CLLocationDegrees(latitude)
+        let lonDegrees = CLLocationDegrees(longitude)
+        
+        return CLLocationCoordinate2D.init(latitude: latDegrees, longitude: lonDegrees)
     }
 }

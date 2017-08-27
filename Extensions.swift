@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MapKit
 
 extension CGFloat {
     
@@ -14,4 +15,9 @@ extension CGFloat {
         
         self = operation(self, shiftAmount)
     }
+}
+
+extension MKAnnotation {
+    
+    
 }
