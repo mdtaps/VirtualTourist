@@ -35,6 +35,8 @@ class TravelLocationsViewController: UIViewController {
         
         setupCoreData()
         
+        fetchedResultsController?.delegate = self
+        
         //Set up Map
         mapView.delegate = self
         longPressGestureRecognizer.minimumPressDuration = 1
@@ -142,7 +144,6 @@ extension TravelLocationsViewController {
                         context: context)
         }
         
-        mapView.addAnnotation(annotation)
     }
 
     func loadPins() {
@@ -173,7 +174,7 @@ extension TravelLocationsViewController {
             let annotation = MKPointAnnotation()
             annotation.coordinate = CLLocationCoordinate2D(latitude: lat, longitude: lon)
             
-//            mapView.addAnnotation(annotation)
+            mapView.addAnnotation(annotation)
         }
     }
 
