@@ -9,6 +9,9 @@
 import Foundation
 
 struct Constants {
+    
+    static let ShiftAmount = 80
+    
     struct EntityNames {
         static let Pin = "Pin"
         static let Photo = "Photo"

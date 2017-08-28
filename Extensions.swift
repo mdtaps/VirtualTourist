@@ -9,15 +9,12 @@
 import UIKit
 import MapKit
 
-extension CGFloat {
+extension UIView {
     
-    mutating func shift(by shiftAmount: CGFloat, inDirection operation: (CGFloat, CGFloat) -> (CGFloat)) {
+    func shift(by shiftAmount: CGFloat, inDirection operation: (CGFloat, CGFloat) -> (CGFloat)) {
         
-        self = operation(self, shiftAmount)
+        let y = self.frame.origin.y
+        
+        self.frame.origin.y = operation(y, shiftAmount)
     }
-}
-
-extension MKAnnotation {
-    
-    
 }

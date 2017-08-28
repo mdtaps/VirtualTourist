@@ -23,7 +23,7 @@
 		F4A283C81F4BECE700F043EA /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A283C71F4BECE700F043EA /* Constants.swift */; };
 		F4A283CE1F4EB05300F043EA /* TouristViewElements.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A283CD1F4EB05300F043EA /* TouristViewElements.swift */; };
 		F4A283D11F4EC61300F043EA /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A283D01F4EC61300F043EA /* Extensions.swift */; };
-		F4A283D41F53DB7600F043EA /* FRC + Functions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A283D31F53DB7600F043EA /* FRC + Functions.swift */; };
+		F4A283D61F54002700F043EA /* CoreDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A283D51F54002700F043EA /* CoreDataViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -63,11 +63,11 @@
 		F4A283C01F4BEA2000F043EA /* Pin+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Pin+CoreDataProperties.swift"; path = "VirtualTourist/Pin+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		F4A283C11F4BEA2000F043EA /* Photo+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Photo+CoreDataClass.swift"; path = "VirtualTourist/Photo+CoreDataClass.swift"; sourceTree = "<group>"; };
 		F4A283C21F4BEA2000F043EA /* Photo+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Photo+CoreDataProperties.swift"; path = "VirtualTourist/Photo+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		F4A283C71F4BECE700F043EA /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Constants.swift; path = ../Constants.swift; sourceTree = "<group>"; };
+		F4A283C71F4BECE700F043EA /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		F4A283CD1F4EB05300F043EA /* TouristViewElements.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TouristViewElements.swift; sourceTree = "<group>"; };
 		F4A283D01F4EC61300F043EA /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		F4A283D21F52A28500F043EA /* TouristDataModel 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "TouristDataModel 2.xcdatamodel"; sourceTree = "<group>"; };
-		F4A283D31F53DB7600F043EA /* FRC + Functions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FRC + Functions.swift"; sourceTree = "<group>"; };
+		F4A283D51F54002700F043EA /* CoreDataViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -123,7 +123,7 @@
 				F4A283B11F4BDDAB00F043EA /* CoreDataStack.swift */,
 				F4A283831F4BD84700F043EA /* AppDelegate.swift */,
 				F4A283851F4BD84700F043EA /* TravelLocationsViewController.swift */,
-				F4A283C71F4BECE700F043EA /* Constants.swift */,
+				F4A283D51F54002700F043EA /* CoreDataViewController.swift */,
 				F4A283B31F4BE12600F043EA /* TouristDataModel.xcdatamodeld */,
 				F4A283871F4BD84700F043EA /* Main.storyboard */,
 				F4A2838A1F4BD84700F043EA /* Assets.xcassets */,
@@ -159,7 +159,7 @@
 				F4A283C11F4BEA2000F043EA /* Photo+CoreDataClass.swift */,
 				F4A283C21F4BEA2000F043EA /* Photo+CoreDataProperties.swift */,
 				F4A283D01F4EC61300F043EA /* Extensions.swift */,
-				F4A283D31F53DB7600F043EA /* FRC + Functions.swift */,
+				F4A283C71F4BECE700F043EA /* Constants.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -310,6 +310,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F4A283B21F4BDDAB00F043EA /* CoreDataStack.swift in Sources */,
+				F4A283D61F54002700F043EA /* CoreDataViewController.swift in Sources */,
 				F4A283C51F4BEA2000F043EA /* Photo+CoreDataClass.swift in Sources */,
 				F4A283C41F4BEA2000F043EA /* Pin+CoreDataProperties.swift in Sources */,
 				F4A283C31F4BEA2000F043EA /* Pin+CoreDataClass.swift in Sources */,
@@ -320,7 +321,6 @@
 				F4A283CE1F4EB05300F043EA /* TouristViewElements.swift in Sources */,
 				F4A283D11F4EC61300F043EA /* Extensions.swift in Sources */,
 				F4A283C81F4BECE700F043EA /* Constants.swift in Sources */,
-				F4A283D41F53DB7600F043EA /* FRC + Functions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

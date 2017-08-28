@@ -10,7 +10,7 @@ import UIKit
 import MapKit
 import CoreData
 
-class TravelLocationsViewController: UIViewController {
+class TravelLocationsViewController: CoreDataViewController {
     
     //MARK: Outlets
     @IBOutlet weak var mapView: MKMapView!
@@ -19,16 +19,11 @@ class TravelLocationsViewController: UIViewController {
     //Propeties
     var deleteModeLabel = DeleteModeLabel()
     var inDeleteMode = false
+    final let ShiftAmount: CGFloat = 80
+
     
-    var fetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>? {
-        didSet {
-            do {
-                try fetchedResultsController?.performFetch()
-            } catch let error as NSError {
-                print("Error while trying to perform search: \n \(error)")
-            }
-        }
-    }
+    /*  TODO: Figure out how to handle fetchedResultsController
+        across different View Controllers. Create a new class? */
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -70,7 +65,7 @@ extension TravelLocationsViewController {
         inDeleteMode = !inDeleteMode
         
         setupMapGestures()
-        setupView()
+        shiftView()
     }
     
     func setupMapGestures() {
@@ -89,17 +84,13 @@ extension TravelLocationsViewController {
         }
     }
     
-    func setupView() {
+    func shiftView() {
         
-        let shiftAmount: CGFloat = 80
+        let direction: (CGFloat, CGFloat) -> (CGFloat) = inDeleteMode ? (-) : (+)
         
-        if inDeleteMode {
-            mapView.frame.origin.y.shift(by: shiftAmount, inDirection: -)
-            deleteModeLabel.frame.origin.y.shift(by: shiftAmount, inDirection: -)
-        } else {
-            mapView.frame.origin.y.shift(by: shiftAmount, inDirection: +)
-            deleteModeLabel.frame.origin.y.shift(by: shiftAmount, inDirection: +)
-        }
+        mapView.shift(by: ShiftAmount, inDirection: direction)
+        deleteModeLabel.shift(by: ShiftAmount, inDirection: direction)
+        
     }
 }
 
@@ -205,7 +196,7 @@ extension TravelLocationsViewController: MKMapViewDelegate {
         switch inDeleteMode {
         case true:
             deletePin(view)
-            print("Not in delete mode")
+            print("In delete mode")
             
         case false:
             //TODO: Navigate to Tourist Photos
