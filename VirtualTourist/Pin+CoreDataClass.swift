@@ -28,6 +28,13 @@ public class Pin: NSManagedObject {
     }
 }
 
+extension Pin {
+    
+    @nonobjc public class func pinFetchRequest() -> NSFetchRequest<Pin> {
+        return NSFetchRequest<Pin>(entityName: "Pin")
+    }
+}
+
 extension Pin: MKAnnotation {
     
     //TODO: Figure out whether lat and lon need to be optional, and update model version

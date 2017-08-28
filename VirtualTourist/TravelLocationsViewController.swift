@@ -108,13 +108,14 @@ extension TravelLocationsViewController {
 extension TravelLocationsViewController {
     
     func setupCoreData() {
+        
         //Set up CoreData stack
         let delegate = UIApplication.shared.delegate as! AppDelegate
         guard let stack = delegate.stack else {
             fatalError("Could not refrence stack in Travel Locations VC")
         }
         
-        //Set up Core Data
+        //Set up FetchRequestController
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: Constants.EntityNames.Pin)
         
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: Constants.PinAttributeNames.Latitude, ascending: false),
@@ -147,54 +148,29 @@ extension TravelLocationsViewController {
     }
 
     func loadPins() {
-        var pins = [(Double, Double)]()
         
-        let request = NSFetchRequest<Pin>(entityName: Constants.EntityNames.Pin)
+        let request: NSFetchRequest<Pin> = Pin.fetchRequest()
         
         do {
-            guard let entities = try fetchedResultsController?.managedObjectContext.fetch(request) else {
+            guard let pins = try fetchedResultsController?.managedObjectContext.fetch(request) else {
                 throw NSError(domain: "loadPins", code: 1, userInfo: [NSLocalizedDescriptionKey: "Failed to load entities"])
             }
             
-            for entity in entities {
-                pins.append((entity.latitude, entity.longitude))
+            for pin in pins {
+                mapView.addAnnotation(pin)
             }
         } catch let error as NSError {
             dump(error)
         }
-        
-        dropPins(arrayOf: pins)
     }
-    
-    func dropPins(arrayOf pinCoordinates: [(Double, Double)]) {
-        
-        for coordinates in pinCoordinates {
-            
-            let (lat, lon) = coordinates
-            let annotation = MKPointAnnotation()
-            annotation.coordinate = CLLocationCoordinate2D(latitude: lat, longitude: lon)
-            
-            mapView.addAnnotation(annotation)
-        }
-    }
-
     
     func deletePin(_ annotationView: MKAnnotationView) {
         
         if let context = fetchedResultsController?.managedObjectContext,
-           let pins = fetchedResultsController?.fetchedObjects as? [Pin]{
+           let annotation = annotationView.annotation as? NSManagedObject {
             
-            for pin in pins {
-                
-                if pin.latitude == annotationView.annotation?.coordinate.latitude &&
-                   pin.longitude == annotationView.annotation?.coordinate.longitude {
-                    
-                    context.delete(pin)
-                    return
-                }
-            }
+            context.delete(annotation)
         }
-        
     }
 }
 
