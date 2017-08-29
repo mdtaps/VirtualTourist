@@ -7,10 +7,11 @@
 //
 
 import Foundation
+import UIKit
 
 struct Constants {
     
-    static let ShiftAmount = 80
+    static let ShiftAmount: CGFloat = 80
     
     struct EntityNames {
         static let Pin = "Pin"

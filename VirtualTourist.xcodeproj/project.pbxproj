@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F4533BD41F553B990059787F /* TravelLocationsVCModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4533BD31F553B990059787F /* TravelLocationsVCModel.swift */; };
 		F4A283841F4BD84700F043EA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A283831F4BD84700F043EA /* AppDelegate.swift */; };
 		F4A283861F4BD84700F043EA /* TravelLocationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A283851F4BD84700F043EA /* TravelLocationsViewController.swift */; };
 		F4A283891F4BD84700F043EA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F4A283871F4BD84700F043EA /* Main.storyboard */; };
@@ -44,6 +45,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		F4533BD31F553B990059787F /* TravelLocationsVCModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TravelLocationsVCModel.swift; sourceTree = "<group>"; };
 		F4A283801F4BD84700F043EA /* VirtualTourist.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VirtualTourist.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4A283831F4BD84700F043EA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F4A283851F4BD84700F043EA /* TravelLocationsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TravelLocationsViewController.swift; sourceTree = "<group>"; };
@@ -160,6 +162,7 @@
 				F4A283C21F4BEA2000F043EA /* Photo+CoreDataProperties.swift */,
 				F4A283D01F4EC61300F043EA /* Extensions.swift */,
 				F4A283C71F4BECE700F043EA /* Constants.swift */,
+				F4533BD31F553B990059787F /* TravelLocationsVCModel.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -316,6 +319,7 @@
 				F4A283C31F4BEA2000F043EA /* Pin+CoreDataClass.swift in Sources */,
 				F4A283861F4BD84700F043EA /* TravelLocationsViewController.swift in Sources */,
 				F4A283B51F4BE12600F043EA /* TouristDataModel.xcdatamodeld in Sources */,
+				F4533BD41F553B990059787F /* TravelLocationsVCModel.swift in Sources */,
 				F4A283C61F4BEA2000F043EA /* Photo+CoreDataProperties.swift in Sources */,
 				F4A283841F4BD84700F043EA /* AppDelegate.swift in Sources */,
 				F4A283CE1F4EB05300F043EA /* TouristViewElements.swift in Sources */,
@@ -573,6 +577,7 @@
 				F4A283AA1F4BD84700F043EA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		F4A283AB1F4BD84700F043EA /* Build configuration list for PBXNativeTarget "VirtualTouristTests" */ = {
 			isa = XCConfigurationList;
@@ -581,6 +586,7 @@
 				F4A283AD1F4BD84700F043EA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		F4A283AE1F4BD84700F043EA /* Build configuration list for PBXNativeTarget "VirtualTouristUITests" */ = {
 			isa = XCConfigurationList;
@@ -589,6 +595,7 @@
 				F4A283B01F4BD84700F043EA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 

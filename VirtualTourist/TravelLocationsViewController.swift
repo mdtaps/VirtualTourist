@@ -18,27 +18,19 @@ class TravelLocationsViewController: CoreDataViewController {
     
     //Propeties
     var deleteModeLabel = DeleteModeLabel()
-    var inDeleteMode = false
     final let ShiftAmount: CGFloat = 80
-
-    
-    /*  TODO: Figure out how to handle fetchedResultsController
-        across different View Controllers. Create a new class? */
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setupCoreData()
-        
-        fetchedResultsController?.delegate = self
+        fetchedResultsController = createFetchedResultsController(for: Pin.self)
         
         //Set up Map
         mapView.delegate = self
         longPressGestureRecognizer.minimumPressDuration = 1
         
         //Setup View Elements
-        deleteModeLabel = DeleteModeLabel(view: view)
-        view.addSubview(deleteModeLabel)
+        view.addSubview(DeleteMode.label(relativeTo: mapView))
     }
     
     //MARK: Actions
@@ -49,6 +41,7 @@ class TravelLocationsViewController: CoreDataViewController {
             
         }
     }
+    
     @IBAction func editButtonPressed(_ sender: UIBarButtonItem) {
         
         toggleDeleteMode()
@@ -62,10 +55,9 @@ extension TravelLocationsViewController {
     
     func toggleDeleteMode() {
         
-        inDeleteMode = !inDeleteMode
-        
+        DeleteMode.toggle()
+        DeleteMode.shift(views: view.subviews)
         setupMapGestures()
-        shiftView()
     }
     
     func setupMapGestures() {
@@ -79,45 +71,10 @@ extension TravelLocationsViewController {
             
             if recognizer is UILongPressGestureRecognizer {
                 
-                recognizer.isEnabled = !inDeleteMode
+                recognizer.isEnabled = !DeleteMode.isOn
             }
         }
     }
-    
-    func shiftView() {
-        
-        let direction: (CGFloat, CGFloat) -> (CGFloat) = inDeleteMode ? (-) : (+)
-        
-        mapView.shift(by: ShiftAmount, inDirection: direction)
-        deleteModeLabel.shift(by: ShiftAmount, inDirection: direction)
-        
-    }
-}
-
-//MARK: CoreData Functions
-
-extension TravelLocationsViewController {
-    
-    func setupCoreData() {
-        
-        //Set up CoreData stack
-        let delegate = UIApplication.shared.delegate as! AppDelegate
-        guard let stack = delegate.stack else {
-            fatalError("Could not refrence stack in Travel Locations VC")
-        }
-        
-        //Set up FetchRequestController
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: Constants.EntityNames.Pin)
-        
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: Constants.PinAttributeNames.Latitude, ascending: false),
-                                        NSSortDescriptor(key: Constants.PinAttributeNames.Longitude, ascending: true)]
-        
-        fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                                              managedObjectContext: stack.context,
-                                                              sectionNameKeyPath: nil,
-                                                              cacheName: nil)
-    }
-    
 }
 
 //MARK: Pin Functions
@@ -193,7 +150,7 @@ extension TravelLocationsViewController: MKMapViewDelegate {
     }
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         
-        switch inDeleteMode {
+        switch DeleteMode.isOn {
         case true:
             deletePin(view)
             print("In delete mode")

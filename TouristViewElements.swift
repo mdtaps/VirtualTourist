@@ -11,17 +11,9 @@ import UIKit
 
 class DeleteModeLabel: UILabel {
     
-    convenience init(view: UIView) {
-        let frame = CGRect(x: view.frame.minX,
-                           y: view.frame.maxY,
-                           width: view.frame.width, height: 80 )
-        
-        self.init(frame: frame)
-    }
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        
+    convenience init() {
+        self.init()
+
         self.backgroundColor = .red
         self.textColor = .white
         self.textAlignment = .center
