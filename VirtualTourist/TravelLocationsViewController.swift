@@ -17,8 +17,7 @@ class TravelLocationsViewController: CoreDataViewController {
     @IBOutlet var longPressGestureRecognizer: UILongPressGestureRecognizer!
     
     //Propeties
-    var deleteModeLabel = DeleteModeLabel()
-    final let ShiftAmount: CGFloat = 80
+    let deleteMode = DeleteMode(isOn: false)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,7 +29,7 @@ class TravelLocationsViewController: CoreDataViewController {
         longPressGestureRecognizer.minimumPressDuration = 1
         
         //Setup View Elements
-        view.addSubview(DeleteMode.label(relativeTo: mapView))
+        view.addSubview(DeleteModeLabel(below: mapView))
     }
     
     //MARK: Actions
@@ -38,42 +37,18 @@ class TravelLocationsViewController: CoreDataViewController {
         
         if gestureRecognizer.state == .began {
             addPin(at: gestureRecognizer.location(in: mapView))
-            
         }
     }
     
     @IBAction func editButtonPressed(_ sender: UIBarButtonItem) {
         
-        toggleDeleteMode()
-    }
-    
-}
-
-//MARK: Functions for Edit Button
-
-extension TravelLocationsViewController {
-    
-    func toggleDeleteMode() {
+        deleteMode.toggle()
         
-        DeleteMode.toggle()
-        DeleteMode.shift(views: view.subviews)
-        setupMapGestures()
-    }
-    
-    func setupMapGestures() {
-        
-        guard let recognizers = mapView.gestureRecognizers else {
-            print("Error finding gesture recognizers in tourist map view")
-            return
+        for view in view.subviews {
+            view.shift(by: Constants.ShiftAmount, deleteMode: deleteMode.isOn)
         }
         
-        for recognizer in recognizers {
-            
-            if recognizer is UILongPressGestureRecognizer {
-                
-                recognizer.isEnabled = !DeleteMode.isOn
-            }
-        }
+        longPressGestureRecognizer.isEnabled = !deleteMode.isOn
     }
 }
 
@@ -82,17 +57,15 @@ extension TravelLocationsViewController {
 extension TravelLocationsViewController {
     
     func addPin(at touchLocation: CGPoint) {
-        let coordinateOnMap = mapView.convert(touchLocation, toCoordinateFrom: mapView)
         
-        let annotation = MKPointAnnotation()
-        annotation.coordinate = coordinateOnMap
-        
-        if let context = fetchedResultsController?.managedObjectContext {
-            let _ = Pin(latitude: annotation.coordinate.latitude,
-                        longitude: annotation.coordinate.longitude,
-                        context: context)
+        guard let context = fetchedResultsController?.managedObjectContext else {
+            fatalError("Could not get context when adding pin")
         }
         
+        let coordinateOnMap = mapView.convert(touchLocation, toCoordinateFrom: mapView)
+             
+        let _ = Pin(coordinate: coordinateOnMap,
+                        context: context)
     }
 
     func loadPins() {
@@ -101,11 +74,14 @@ extension TravelLocationsViewController {
         
         do {
             guard let pins = try fetchedResultsController?.managedObjectContext.fetch(request) else {
-                throw NSError(domain: "loadPins", code: 1, userInfo: [NSLocalizedDescriptionKey: "Failed to load entities"])
+                throw NSError(domain: "loadPins",
+                              code: 1,
+                              userInfo: [NSLocalizedDescriptionKey: "Failed to load pins"])
             }
             
             for pin in pins {
                 mapView.addAnnotation(pin)
+                
             }
         } catch let error as NSError {
             dump(error)
@@ -150,7 +126,7 @@ extension TravelLocationsViewController: MKMapViewDelegate {
     }
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         
-        switch DeleteMode.isOn {
+        switch deleteMode.isOn {
         case true:
             deletePin(view)
             print("In delete mode")

@@ -13,13 +13,13 @@ import MapKit
 @objc(Pin)
 public class Pin: NSManagedObject {
     
-    convenience init(latitude: Double, longitude: Double, context: NSManagedObjectContext) {
+    convenience init(coordinate: CLLocationCoordinate2D, context: NSManagedObjectContext) {
         //Create entity to give Pin class access to its entities in Database
         if let entity = NSEntityDescription.entity(forEntityName: Constants.EntityNames.Pin, in: context) {
             self.init(entity: entity, insertInto: context)
             
-            self.latitude = latitude
-            self.longitude = longitude
+            self.latitude = coordinate.latitude
+            self.longitude = coordinate.longitude
             
         } else {
             fatalError("Unable to find entity name!")
@@ -36,6 +36,6 @@ extension Pin: MKAnnotation {
         let latDegrees = CLLocationDegrees(latitude)
         let lonDegrees = CLLocationDegrees(longitude)
         
-        return CLLocationCoordinate2D.init(latitude: latDegrees, longitude: lonDegrees)
+        return CLLocationCoordinate2D(latitude: latDegrees, longitude: lonDegrees)
     }
 }

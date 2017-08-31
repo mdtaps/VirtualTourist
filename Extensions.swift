@@ -7,14 +7,18 @@
 //
 
 import UIKit
-import MapKit
 
 extension UIView {
     
-    func shift(by shiftAmount: CGFloat, inDirection operation: (CGFloat, CGFloat) -> (CGFloat)) {
+    func shift(by amount: CGFloat, deleteMode status: Bool) {
+        
+        var operation: (CGFloat, CGFloat) -> CGFloat {
+            
+            return status ? (-) : (+)
+        }
         
         let y = self.frame.origin.y
         
-        self.frame.origin.y = operation(y, shiftAmount)
+        self.frame.origin.y = operation(y, amount)
     }
 }
