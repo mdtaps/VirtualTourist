@@ -138,6 +138,8 @@ extension TravelLocationsViewController: MKMapViewDelegate {
     }
 }
 
+//MARK: FetchedResultsControllerDelegate Functions
+
 extension TravelLocationsViewController: NSFetchedResultsControllerDelegate {
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
@@ -161,4 +163,9 @@ extension TravelLocationsViewController: NSFetchedResultsControllerDelegate {
             fatalError("You can't move pins!")
         }
     }
-   }
+}
+
+extension TravelLocationsViewController {
+    
+    
+}

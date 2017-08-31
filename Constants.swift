@@ -27,3 +27,30 @@ struct Constants {
         static let Photo = "photo"
     }
 }
+
+struct FlickrConstants {
+    
+    struct APIConstants {
+        static let Scheme = "https://"
+        static let Host = "api.flickr.com"
+        static let Path = "/services/rest/"
+    }
+    
+    struct URLParameterKeys {
+        static let Method = "method"
+        static let APIKey = "api_key"
+        static let Latitude = "lat"
+        static let Longitude = "lon"
+        static let Radius = "radius"
+        static let Format = "Format"
+        static let NoJsonCallBack = "nojsoncallback"
+    }
+    
+    struct URLParameterValues {
+        static let Method = "flickr.photos.search"
+        static let APIKey = "INPUT KEY HERE"
+        static let Format = "json"
+        static let NoJsonCallBack = "1"
+        
+    }
+}
