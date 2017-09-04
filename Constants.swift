@@ -49,8 +49,31 @@ struct FlickrConstants {
     struct URLParameterValues {
         static let Method = "flickr.photos.search"
         static let APIKey = "INPUT KEY HERE"
+        static let Radius = "1"
         static let Format = "json"
         static let NoJsonCallBack = "1"
+    }
+    
+    struct HTTPHeaderKeys {
+        static let ContentType = "Content-Type"
+    }
+    
+    struct HTTPHeaderValues {
+        static let ContentType = "application/json"
+    }
+    
+    struct JSONResponseKeys {
+        static let Photos = "photos"
         
+        static let Page = "page"
+        static let Pages = "pages"
+        static let Perpage = "perpage"
+        static let Total = "total"
+        static let Photo = "Photo"
+        
+        static let Id = "id"
+        static let Secret = "secret"
+        static let Server = "server"
+        static let Farm = "farm"
     }
 }

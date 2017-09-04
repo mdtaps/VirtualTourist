@@ -9,15 +9,26 @@
 import Foundation
 import UIKit
 
-class DeleteMode {
+enum DeleteMode {
     
-    var isOn: Bool
+    case On
+    case Off
     
-    init(isOn: Bool) {
-        self.isOn = isOn
+    mutating func toggle() {
+        switch self {
+        case .On:
+            self = .Off
+        case .Off:
+            self = .On
+        }
     }
     
-    func toggle() {
-        isOn = !isOn
+    var opertation: (Double, Double) -> Double {
+        switch self {
+        case .On:
+            return (-)
+        case .Off:
+            return (+)
+        }
     }
 }

@@ -17,7 +17,7 @@ class TravelLocationsViewController: CoreDataViewController {
     @IBOutlet var longPressGestureRecognizer: UILongPressGestureRecognizer!
     
     //Propeties
-    let deleteMode = DeleteMode(isOn: false)
+    var deleteMode: DeleteMode = .Off
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,7 +29,8 @@ class TravelLocationsViewController: CoreDataViewController {
         longPressGestureRecognizer.minimumPressDuration = 1
         
         //Setup View Elements
-        view.addSubview(DeleteModeLabel(below: mapView))
+        let label = DeleteModeLabel(below: view)
+        view.addSubview(label)
     }
     
     //MARK: Actions
@@ -44,18 +45,16 @@ class TravelLocationsViewController: CoreDataViewController {
         
         deleteMode.toggle()
         
-        for view in view.subviews {
-            view.shift(by: Constants.ShiftAmount, deleteMode: deleteMode.isOn)
-        }
+        view.shiftSubviews(with: deleteMode.opertation)
         
-        longPressGestureRecognizer.isEnabled = !deleteMode.isOn
+        longPressGestureRecognizer.isEnabled = !longPressGestureRecognizer.isEnabled
     }
 }
 
 //MARK: Pin Functions
 
 extension TravelLocationsViewController {
-    
+        
     func addPin(at touchLocation: CGPoint) {
         
         guard let context = fetchedResultsController?.managedObjectContext else {
@@ -126,12 +125,12 @@ extension TravelLocationsViewController: MKMapViewDelegate {
     }
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         
-        switch deleteMode.isOn {
-        case true:
+        switch deleteMode {
+        case .On:
             deletePin(view)
             print("In delete mode")
             
-        case false:
+        case .Off:
             //TODO: Navigate to Tourist Photos
             print("Not in delete mode")
         }
@@ -163,9 +162,4 @@ extension TravelLocationsViewController: NSFetchedResultsControllerDelegate {
             fatalError("You can't move pins!")
         }
     }
-}
-
-extension TravelLocationsViewController {
-    
-    
 }
