@@ -10,47 +10,51 @@ import Foundation
 
 class FlickrClient {
     
-    var shared = FlickrClient()
+    static var shared = FlickrClient()
     
     private init() { }
     
     let session = URLSession.shared
-    let parameters = [String: String]()
-    var urlParameters = [FlickrConstants.URLParameterKeys.Method        : FlickrConstants.URLParameterValues.Method,
-                         FlickrConstants.URLParameterKeys.APIKey        : FlickrConstants.URLParameterValues.APIKey,
-                         FlickrConstants.URLParameterKeys.Radius        : FlickrConstants.URLParameterValues.Radius,
-                         FlickrConstants.URLParameterKeys.Format        : FlickrConstants.URLParameterValues.Format,
-                         FlickrConstants.URLParameterKeys.NoJsonCallBack: FlickrConstants.URLParameterValues.NoJsonCallBack]
+    var parameters = [String: String]()
+    var defaultUrlParameters = [FlickrConstants.URLParameterKeys.Method        : FlickrConstants.URLParameterValues.Method,
+                                FlickrConstants.URLParameterKeys.APIKey        : FlickrConstants.URLParameterValues.APIKey,
+                                FlickrConstants.URLParameterKeys.Radius        : FlickrConstants.URLParameterValues.Radius,
+                                FlickrConstants.URLParameterKeys.Format        : FlickrConstants.URLParameterValues.Format,
+                                FlickrConstants.URLParameterKeys.NoJsonCallBack: FlickrConstants.URLParameterValues.NoJsonCallBack]
     
-    enum DataRequest {
-        case Success(data: Data)
-        case Failure(statusCode: Int?, errorMessage: String)
-    }
+    var urls = [URL]()
     
-    func flickrGETTask(_ completionHandlerForGET: @escaping (_ dataRequest: DataRequest) -> Void) {
+    
+    func flickrGETTask(_ completionHandlerForGET: @escaping (_ dataRequest: Response<Data>) -> Void) {
         guard let request = flickrGETRequest() else {
-            completionHandlerForGET(.Failure(statusCode: nil, errorMessage: "Error getting data request"))
+            completionHandlerForGET(.Failure(errorMessage: "Error getting data request"))
+            return
         }
         
         let task = session.dataTask(with: request) { (data, response, error) in
             
             if let error = error {
-                completionHandlerForGET(.Failure(statusCode: nil, errorMessage: error.localizedDescription))
+                completionHandlerForGET(.Failure(errorMessage: error.localizedDescription))
             }
             
             if let response = response {
-                guard let statusCode = (response as? HTTPURLResponse)?.statusCode else {
-                    completionHandlerForGET(.Failure(statusCode: nil, errorMessage: "No status code returned with task"))
+                guard let code = (response as? HTTPURLResponse)?.statusCode else {
+                    completionHandlerForGET(.Failure(errorMessage: "No status code returned with task"))
+                    
+                    return
                 }
                 
-                if statusCode < 200 || statusCode >= 300 {
-                    completionHandlerForGET(.Failure(statusCode: statusCode,
-                                                     errorMessage: "Bad Status Code"))
+                let statusCode = StatusCode(code: code)
+                
+                switch statusCode {
+                case .Ok: break
+                default:
+                    completionHandlerForGET(.Failure(errorMessage: "Request returned with status code: \(statusCode)"))
                 }
-            }
+             }
             
             if let data = data {
-                completionHandlerForGET(.Success(data: data))
+                completionHandlerForGET(.Success(with: data))
             }
         }
         
@@ -59,7 +63,7 @@ class FlickrClient {
 
     func flickrGETRequest() -> URLRequest? {
         
-        guard let url = flickrURLwith(parameters) else {
+        guard let url = flickrURL() else {
             return nil
         }
         
@@ -70,7 +74,7 @@ class FlickrClient {
         return request as URLRequest
     }
     
-    func flickrURLwith(_ parameters: [String: String]) -> URL? {
+    func flickrURL() -> URL? {
         
         var components = URLComponents()
         components.scheme = FlickrConstants.APIConstants.Scheme
@@ -78,7 +82,7 @@ class FlickrClient {
         components.path = FlickrConstants.APIConstants.Path
         var queryItems = [URLQueryItem]()
         
-        for (key, value) in urlParameters {
+        for (key, value) in defaultUrlParameters {
             queryItems.append(URLQueryItem(name: key, value: value))
             
         }
@@ -102,4 +106,43 @@ class FlickrClient {
         
         return request
     }
+}
+
+enum StatusCode: CustomStringConvertible {
+    case Ok(Int)
+    case BadParameters(Int)
+    case NotFound(Int)
+    case Unknown(Int)
+    
+    init(code: Int) {
+        switch code {
+        case 200...299:
+            self = .Ok(code)
+        case 900...999:
+            self = .BadParameters(code)
+        case 404:
+            self = .NotFound(code)
+        default:
+            self = .Unknown(code)
+        }
+    }
+    
+    var description: String {
+        switch self {
+        case .Ok(let code):
+            return "\(code): Ok"
+        case .BadParameters(let code):
+            return "\(code): Bad parameters"
+        case .NotFound(let code):
+            return "\(code): Not Found"
+        case .Unknown(let code):
+            return "\(code): Unknown status code"
+            
+        }
+    }
+}
+
+enum Response<T> {
+    case Success(with: T)
+    case Failure(errorMessage: String)
 }

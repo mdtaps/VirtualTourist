@@ -131,7 +131,13 @@ extension TravelLocationsViewController: MKMapViewDelegate {
             print("In delete mode")
             
         case .Off:
-            //TODO: Navigate to Tourist Photos
+            FlickrClient.shared.retrieve(picturesFor: view.annotation!) { (success, errorMessage) in
+                if success {
+                    dump(FlickrClient.shared.urls)
+                } else {
+                    
+                }
+            }
             print("Not in delete mode")
         }
     }
