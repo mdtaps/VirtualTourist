@@ -54,6 +54,7 @@ class FlickrClient {
              }
             
             if let data = data {
+                dump(data)
                 completionHandlerForGET(.Success(with: data))
             }
         }
@@ -66,6 +67,8 @@ class FlickrClient {
         guard let url = flickrURL() else {
             return nil
         }
+        
+        print(url.absoluteString)
         
         guard let request = flickrMutableUrlRequestWith(url) else {
             return nil
@@ -101,8 +104,9 @@ class FlickrClient {
     func flickrMutableUrlRequestWith(_ url: URL) -> NSMutableURLRequest? {
         
         let request = NSMutableURLRequest(url: url)
-        request.addValue(FlickrConstants.HTTPHeaderValues.ContentType,
-                         forHTTPHeaderField: FlickrConstants.HTTPHeaderKeys.ContentType)
+//        request.addValue(FlickrConstants.HTTPHeaderValues.ContentType,
+//                         forHTTPHeaderField: FlickrConstants.HTTPHeaderKeys.ContentType)
+//        request.httpMethod = "GET"
         
         return request
     }

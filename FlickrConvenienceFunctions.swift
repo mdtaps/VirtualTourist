@@ -49,6 +49,10 @@ extension FlickrClient {
                 
                 let parsedData = GeneralNetworkingClient.jsonObjectFromJsonData(data)
                 
+                print("Pre dump \n")
+                dump(parsedData)
+                print("\nPost dump")
+                
                 guard let photos = parsedData?[FlickrConstants.JSONResponseKeys.Photos] as? [String: AnyObject] else {
                     sendError(withMessage: "Could not find \"photos\" in \(String(describing: parsedData))")
                     return

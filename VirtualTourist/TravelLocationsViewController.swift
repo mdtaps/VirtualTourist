@@ -135,7 +135,7 @@ extension TravelLocationsViewController: MKMapViewDelegate {
                 if success {
                     dump(FlickrClient.shared.urls)
                 } else {
-                    
+                    dump(errorMessage)
                 }
             }
             print("Not in delete mode")

@@ -31,7 +31,7 @@ struct Constants {
 struct FlickrConstants {
     
     struct APIConstants {
-        static let Scheme = "https://"
+        static let Scheme = "https"
         static let Host = "api.flickr.com"
         static let Path = "/services/rest/"
     }
@@ -42,13 +42,13 @@ struct FlickrConstants {
         static let Latitude = "lat"
         static let Longitude = "lon"
         static let Radius = "radius"
-        static let Format = "Format"
+        static let Format = "format"
         static let NoJsonCallBack = "nojsoncallback"
     }
     
     struct URLParameterValues {
         static let Method = "flickr.photos.search"
-        static let APIKey = "INPUT KEY HERE"
+        static let APIKey = getAPIKey()
         static let Radius = "5"
         static let Format = "json"
         static let NoJsonCallBack = "1"
@@ -69,11 +69,24 @@ struct FlickrConstants {
         static let Pages = "pages"
         static let Perpage = "perpage"
         static let Total = "total"
-        static let Photo = "Photo"
+        static let Photo = "photo"
         
         static let Id = "id"
         static let Secret = "secret"
         static let Server = "server"
         static let Farm = "farm"
     }
+}
+
+fileprivate func getAPIKey() -> String {
+     if let path = Bundle.main.path(forResource: "APIKeyPropertyList", ofType: "plist"),
+        let dict = NSDictionary(contentsOfFile: path) as? [String: AnyObject] {
+        
+        if let key = dict["FlickrAPIKey"] as? String {
+            return key
+        }
+        
+    }
+    
+    fatalError("Couldn't get API Key")
 }
