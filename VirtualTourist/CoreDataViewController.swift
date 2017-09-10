@@ -40,6 +40,7 @@ class CoreDataViewController: UIViewController {
         
         //Add sort descriptors
         var descriptors = [NSSortDescriptor]()
+        
         for attribute in managedObject.entity().attributesByName {
             
             if descriptor == attribute.key {

@@ -19,7 +19,8 @@ extension FlickrClient {
             switch response {
             case .Failure(let message):
                 completionHanderForRetrieve(false, message)
-            case .Success(let urls): break
+                print("Failure")
+            case .Success(let _):
                 completionHanderForRetrieve(true, nil)
                 //TODO: Return success or failure
                 /*      populatePhoto() {
@@ -49,27 +50,23 @@ extension FlickrClient {
                 
                 let parsedData = GeneralNetworkingClient.jsonObjectFromJsonData(data)
                 
-                print("Pre dump \n")
-                dump(parsedData)
-                print("\nPost dump")
-                
                 guard let photos = parsedData?[FlickrConstants.JSONResponseKeys.Photos] as? [String: AnyObject] else {
                     sendError(withMessage: "Could not find \"photos\" in \(String(describing: parsedData))")
                     return
                 }
                 
-                guard let photo = photos[FlickrConstants.JSONResponseKeys.Photo] as? [[String:String]] else {
+                guard let photo = photos[FlickrConstants.JSONResponseKeys.Photo] as? [[String:AnyObject]] else {
                     sendError(withMessage: "Could not find \"photo\" in \(dump(photos))")
                     return
                 }
                 
                 for dict in photo {
-                    guard let id = dict[FlickrConstants.JSONResponseKeys.Id] else {
+                    guard let id = dict[FlickrConstants.JSONResponseKeys.Id] as? String else {
                         sendError(withMessage: "Could not find \"id\" in \(dump(dict))")
                         return
                     }
                     
-                    guard let secret = dict[FlickrConstants.JSONResponseKeys.Secret] else {
+                    guard let secret = dict[FlickrConstants.JSONResponseKeys.Secret] as? String else {
                         sendError(withMessage: "Could not find \"secret\" in \(dump(dict))")
                         return
 
@@ -80,12 +77,12 @@ extension FlickrClient {
                         return
                     }
                     
-                    guard let serverId = dict[FlickrConstants.JSONResponseKeys.Server] else {
+                    guard let serverId = dict[FlickrConstants.JSONResponseKeys.Server] as? String else {
                         sendError(withMessage: "Could not find \"server\" in \(dump(dict))")
                         return
                     }
                     
-                    let urlElements = URLElements(farmId: farmId, serverId: serverId, id: id, secret: secret)
+                    let urlElements = URLElements(farmId: String(describing: farmId), serverId: serverId, id: id, secret: secret)
                     
                     self.urls.append(GeneralNetworkingClient.jpegURLFromFlickrResponse(urlElements: urlElements))
                     

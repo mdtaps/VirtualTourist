@@ -126,6 +126,7 @@
 				F4A283C01F4BEA2000F043EA /* Pin+CoreDataProperties.swift */,
 				F4A283C11F4BEA2000F043EA /* Photo+CoreDataClass.swift */,
 				F4A283C21F4BEA2000F043EA /* Photo+CoreDataProperties.swift */,
+				F42744361F65F20F00796149 /* MapPinModel.swift */,
 			);
 			name = CoreDataModel;
 			sourceTree = "<group>";
@@ -168,7 +169,6 @@
 				F4A283B11F4BDDAB00F043EA /* CoreDataStack.swift */,
 				F4A283831F4BD84700F043EA /* AppDelegate.swift */,
 				F42744381F65F56700796149 /* View Controllers */,
-				F4A283B31F4BE12600F043EA /* TouristDataModel.xcdatamodeld */,
 				F4A283871F4BD84700F043EA /* Main.storyboard */,
 				F4A2838A1F4BD84700F043EA /* Assets.xcassets */,
 				F4A2838C1F4BD84700F043EA /* LaunchScreen.storyboard */,
@@ -198,9 +198,9 @@
 		F4A283BE1F4BE8B400F043EA /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				F4A283B31F4BE12600F043EA /* TouristDataModel.xcdatamodeld */,
 				F4533BD71F57D9950059787F /* CoreDataModel */,
 				F4A283D01F4EC61300F043EA /* Extensions.swift */,
-				F42744361F65F20F00796149 /* MapPinModel.swift */,
 				F4A283C71F4BECE700F043EA /* Constants.swift */,
 				F4533BD31F553B990059787F /* DeleteMode.swift */,
 				F4533BE51F5FDD870059787F /* APIKeyPropertyList.plist */,
@@ -655,7 +655,8 @@
 				F4A283B41F4BE12600F043EA /* TouristDataModel.xcdatamodel */,
 			);
 			currentVersion = F4A283B41F4BE12600F043EA /* TouristDataModel.xcdatamodel */;
-			path = TouristDataModel.xcdatamodeld;
+			name = TouristDataModel.xcdatamodeld;
+			path = VirtualTourist/TouristDataModel.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};
