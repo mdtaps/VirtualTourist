@@ -10,7 +10,7 @@ import UIKit
 import MapKit
 import CoreData
 
-class TravelLocationsViewController: CoreDataViewController {
+class TravelLocationsViewController: CoreDataViewController, PinDelegate {
     
     //MARK: Outlets
     @IBOutlet weak var mapView: MKMapView!
@@ -18,6 +18,7 @@ class TravelLocationsViewController: CoreDataViewController {
     
     //Propeties
     var deleteMode: DeleteMode = .Off
+    var pinModel = PinModel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,13 +32,16 @@ class TravelLocationsViewController: CoreDataViewController {
         //Setup View Elements
         let label = DeleteModeLabel(below: view)
         view.addSubview(label)
+        
+        //Set up Delegates
+        pinModel.delegate = self
     }
     
     //MARK: Actions
     @IBAction func longPress(_ gestureRecognizer: UIGestureRecognizer) {
         
         if gestureRecognizer.state == .began {
-            addPin(at: gestureRecognizer.location(in: mapView))
+            pinModel.addPin(at: gestureRecognizer.location(in: mapView))
         }
     }
     
@@ -48,52 +52,6 @@ class TravelLocationsViewController: CoreDataViewController {
         view.shiftSubviews(with: deleteMode.opertation)
         
         longPressGestureRecognizer.isEnabled = !longPressGestureRecognizer.isEnabled
-    }
-}
-
-//MARK: Pin Functions
-
-extension TravelLocationsViewController {
-        
-    func addPin(at touchLocation: CGPoint) {
-        
-        guard let context = fetchedResultsController?.managedObjectContext else {
-            fatalError("Could not get context when adding pin")
-        }
-        
-        let coordinateOnMap = mapView.convert(touchLocation, toCoordinateFrom: mapView)
-             
-        let _ = Pin(coordinate: coordinateOnMap,
-                        context: context)
-    }
-
-    func loadPins() {
-        
-        let request: NSFetchRequest<Pin> = Pin.fetchRequest()
-        
-        do {
-            guard let pins = try fetchedResultsController?.managedObjectContext.fetch(request) else {
-                throw NSError(domain: "loadPins",
-                              code: 1,
-                              userInfo: [NSLocalizedDescriptionKey: "Failed to load pins"])
-            }
-            
-            for pin in pins {
-                mapView.addAnnotation(pin)
-                
-            }
-        } catch let error as NSError {
-            dump(error)
-        }
-    }
-    
-    func deletePin(_ annotationView: MKAnnotationView) {
-        
-        if let context = fetchedResultsController?.managedObjectContext,
-           let annotation = annotationView.annotation as? NSManagedObject {
-            
-            context.delete(annotation)
-        }
     }
 }
 
@@ -121,19 +79,23 @@ extension TravelLocationsViewController: MKMapViewDelegate {
     //Load pins when map finishes rendering
     func mapViewDidFinishRenderingMap(_ mapView: MKMapView, fullyRendered: Bool) {
         
-        loadPins()
+        pinModel.loadPins()
     }
+    
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         
+        //If delete mode is on, delete pin
+        //If delete mode is off, go to Photo view for that pin
         switch deleteMode {
         case .On:
-            deletePin(view)
-            print("In delete mode")
-            
+            pinModel.deletePin(view)
+
         case .Off:
+            
             FlickrClient.shared.retrieve(picturesFor: view.annotation!) { (success, errorMessage) in
                 if success {
                     dump(FlickrClient.shared.urls)
+                    
                 } else {
                     dump(errorMessage)
                 }

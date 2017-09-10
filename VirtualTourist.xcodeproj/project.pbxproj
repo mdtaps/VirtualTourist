@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F42744351F61029E00796149 /* PhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42744341F61029E00796149 /* PhotoViewController.swift */; };
+		F42744371F65F20F00796149 /* MapPinModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42744361F65F20F00796149 /* MapPinModel.swift */; };
 		F4533BD41F553B990059787F /* DeleteMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4533BD31F553B990059787F /* DeleteMode.swift */; };
 		F4533BDB1F57E0AC0059787F /* FlickrClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4533BDA1F57E0AC0059787F /* FlickrClient.swift */; };
 		F4533BDF1F5CB1CA0059787F /* GeneralNetworkingClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4533BDE1F5CB1CA0059787F /* GeneralNetworkingClient.swift */; };
@@ -49,6 +51,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		F42744341F61029E00796149 /* PhotoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoViewController.swift; sourceTree = "<group>"; };
+		F42744361F65F20F00796149 /* MapPinModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapPinModel.swift; sourceTree = "<group>"; };
 		F4533BD31F553B990059787F /* DeleteMode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeleteMode.swift; sourceTree = "<group>"; };
 		F4533BDA1F57E0AC0059787F /* FlickrClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlickrClient.swift; sourceTree = "<group>"; };
 		F4533BDE1F5CB1CA0059787F /* GeneralNetworkingClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeneralNetworkingClient.swift; sourceTree = "<group>"; };
@@ -105,6 +109,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		F42744381F65F56700796149 /* View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				F4A283D51F54002700F043EA /* CoreDataViewController.swift */,
+				F4A283851F4BD84700F043EA /* TravelLocationsViewController.swift */,
+				F42744341F61029E00796149 /* PhotoViewController.swift */,
+			);
+			name = "View Controllers";
+			sourceTree = "<group>";
+		};
 		F4533BD71F57D9950059787F /* CoreDataModel */ = {
 			isa = PBXGroup;
 			children = (
@@ -153,8 +167,7 @@
 			children = (
 				F4A283B11F4BDDAB00F043EA /* CoreDataStack.swift */,
 				F4A283831F4BD84700F043EA /* AppDelegate.swift */,
-				F4A283851F4BD84700F043EA /* TravelLocationsViewController.swift */,
-				F4A283D51F54002700F043EA /* CoreDataViewController.swift */,
+				F42744381F65F56700796149 /* View Controllers */,
 				F4A283B31F4BE12600F043EA /* TouristDataModel.xcdatamodeld */,
 				F4A283871F4BD84700F043EA /* Main.storyboard */,
 				F4A2838A1F4BD84700F043EA /* Assets.xcassets */,
@@ -187,6 +200,7 @@
 			children = (
 				F4533BD71F57D9950059787F /* CoreDataModel */,
 				F4A283D01F4EC61300F043EA /* Extensions.swift */,
+				F42744361F65F20F00796149 /* MapPinModel.swift */,
 				F4A283C71F4BECE700F043EA /* Constants.swift */,
 				F4533BD31F553B990059787F /* DeleteMode.swift */,
 				F4533BE51F5FDD870059787F /* APIKeyPropertyList.plist */,
@@ -349,8 +363,10 @@
 				F4A283C31F4BEA2000F043EA /* Pin+CoreDataClass.swift in Sources */,
 				F4A283861F4BD84700F043EA /* TravelLocationsViewController.swift in Sources */,
 				F4A283B51F4BE12600F043EA /* TouristDataModel.xcdatamodeld in Sources */,
+				F42744371F65F20F00796149 /* MapPinModel.swift in Sources */,
 				F4533BE21F5CCE550059787F /* FlickrConvenienceFunctions.swift in Sources */,
 				F4533BD41F553B990059787F /* DeleteMode.swift in Sources */,
+				F42744351F61029E00796149 /* PhotoViewController.swift in Sources */,
 				F4A283C61F4BEA2000F043EA /* Photo+CoreDataProperties.swift in Sources */,
 				F4533BDB1F57E0AC0059787F /* FlickrClient.swift in Sources */,
 				F4A283841F4BD84700F043EA /* AppDelegate.swift in Sources */,
