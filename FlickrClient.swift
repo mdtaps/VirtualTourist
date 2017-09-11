@@ -22,9 +22,6 @@ class FlickrClient {
                                 FlickrConstants.URLParameterKeys.Format        : FlickrConstants.URLParameterValues.Format,
                                 FlickrConstants.URLParameterKeys.NoJsonCallBack: FlickrConstants.URLParameterValues.NoJsonCallBack]
     
-    var urls = [URL]()
-    
-    
     func flickrGETTask(_ completionHandlerForGET: @escaping (_ dataRequest: Response<Data>) -> Void) {
         guard let request = flickrGETRequest() else {
             completionHandlerForGET(.Failure(errorMessage: "Error getting data request"))
@@ -49,12 +46,11 @@ class FlickrClient {
                 switch statusCode {
                 case .Ok: break
                 default:
-                    completionHandlerForGET(.Failure(errorMessage: "Request returned with status code: \(statusCode)"))
+                    completionHandlerForGET(.Failure(errorMessage: "Request failed and returned status code: \(statusCode)"))
                 }
              }
             
             if let data = data {
-                dump(data)
                 completionHandlerForGET(.Success(with: data))
             }
         }
@@ -67,9 +63,7 @@ class FlickrClient {
         guard let url = flickrURL() else {
             return nil
         }
-        
-        print(url.absoluteString)
-        
+                
         guard let request = flickrMutableUrlRequestWith(url) else {
             return nil
         }

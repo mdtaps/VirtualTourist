@@ -25,10 +25,10 @@ class GeneralNetworkingClient: NSObject {
     }
     
     //Picture URL is retrieved from https://farm{farm-id}.staticflickr.com/{server-id}/{id}_{secret}.jpg
-    static func jpegURLFromFlickrResponse(urlElements: URLElements) -> URL {
+    static func jpegURLFromFlickrResponse(urlElements: URLElements) -> URL? {
         let urlString = "https://farm\(urlElements.farmId).staticflickr.com/\(urlElements.serverId)/\(urlElements.id)_\(urlElements.secret).jpg"
     
-        return URL(fileURLWithPath: urlString)
+        return URL(string: urlString)
     }
 }
 

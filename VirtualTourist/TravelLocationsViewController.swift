@@ -91,16 +91,10 @@ extension TravelLocationsViewController: MKMapViewDelegate {
             pinModel.deletePin(view)
 
         case .Off:
-            
-            FlickrClient.shared.retrieve(picturesFor: view.annotation!) { (success, errorMessage) in
-                if success {
-                    dump(FlickrClient.shared.urls)
-                    
-                } else {
-                    dump(errorMessage)
-                }
+            if let pin = view.annotation as? Pin {
+                pushPhotoVC(with: pin)
+
             }
-            print("Not in delete mode")
         }
     }
 }
@@ -129,5 +123,19 @@ extension TravelLocationsViewController: NSFetchedResultsControllerDelegate {
         case .move:
             fatalError("You can't move pins!")
         }
+    }
+}
+
+extension TravelLocationsViewController {
+    
+    func pushPhotoVC(with pin: Pin) {
+        guard let photoVC = storyboard?.instantiateViewController(withIdentifier: "PhotoViewController") as? PhotoViewController else {
+            //TODO: show error
+            print("Could not open photo view")
+            return
+        }
+        
+        photoVC.pin = pin
+        navigationController?.pushViewController(photoVC, animated: true)
     }
 }

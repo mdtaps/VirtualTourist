@@ -12,22 +12,17 @@ import CoreData
 
 extension FlickrClient {
     
-    func retrieve(picturesFor pin: MKAnnotation, completionHanderForRetrieve: @escaping (_ success: Bool, _ errorMessage: String?) -> Void) {
+    func retrieve(picturesFor pin: MKAnnotation, completionHanderForRetrieve: @escaping (_ response: Response<[URL]>) -> Void) {
         
         populatePin(latitude: pin.coordinate.latitude, longitude: pin.coordinate.longitude) { (response) in
             
-            switch response {
-            case .Failure(let message):
-                completionHanderForRetrieve(false, message)
-                print("Failure")
-            case .Success(let _):
-                completionHanderForRetrieve(true, nil)
+            completionHanderForRetrieve(response)
+
                 //TODO: Return success or failure
                 /*      populatePhoto() {
                  if success, start loading photos
                  if failure, populate ui alert with error message
                  */
-            }
         }
     }
     
@@ -46,7 +41,7 @@ extension FlickrClient {
             case .Failure(let errorMessage):
                 sendError(withMessage: errorMessage)
             case .Success(let data):
-                self.urls = [URL]()
+                var urls = [URL]()
                 
                 let parsedData = GeneralNetworkingClient.jsonObjectFromJsonData(data)
                 
@@ -84,11 +79,17 @@ extension FlickrClient {
                     
                     let urlElements = URLElements(farmId: String(describing: farmId), serverId: serverId, id: id, secret: secret)
                     
-                    self.urls.append(GeneralNetworkingClient.jpegURLFromFlickrResponse(urlElements: urlElements))
+                    if let url = GeneralNetworkingClient.jpegURLFromFlickrResponse(urlElements: urlElements) {
+                        urls.append(url)
+
+                    } else {
+                        continue
+                    }
                     
-                    completionHandlerForPopulate(.Success(with: self.urls))
                     
                 }
+                
+                completionHandlerForPopulate(.Success(with: urls))
             }
 
         }

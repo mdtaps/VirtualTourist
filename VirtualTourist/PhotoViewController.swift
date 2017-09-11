@@ -8,12 +8,31 @@
 
 import UIKit
 
-class PhotoViewController: UIViewController {
+class PhotoViewController: CoreDataViewController {
+    
+    var pin: Pin?
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        if let pin = pin {
+            FlickrClient.shared.retrieve(picturesFor: pin) { (response) in
+                
+                switch response {
+                case .Failure(let errorMessage):
+                    print(errorMessage)
+                    //TODO: Display error
+                case .Success(let urls):
+                    
+                    //TODO: Set up Photos in core data correctly
+                    for url in urls {
+                        let _ = Photo(photoUrl: url, context: (self.fetchedResultsController?.managedObjectContext)!)
+                    }
+                    
+                }
+            }
 
-        // Do any additional setup after loading the view.
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -21,15 +40,5 @@ class PhotoViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
+    
 }

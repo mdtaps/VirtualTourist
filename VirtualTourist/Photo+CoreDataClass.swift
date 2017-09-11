@@ -12,10 +12,11 @@ import CoreData
 @objc(Photo)
 public class Photo: NSManagedObject {
     
-    convenience init(photoData photo: NSData, context: NSManagedObjectContext) {
+    convenience init(photoUrl url: URL, context: NSManagedObjectContext) {
         
         if let entity = NSEntityDescription.entity(forEntityName: Constants.EntityNames.Photo,
-                                                   in: context) {
+                                                   in: context),
+           let photo = NSData(contentsOf: url) {
             self.init(entity: entity, insertInto: context)
             self.photo = photo
             

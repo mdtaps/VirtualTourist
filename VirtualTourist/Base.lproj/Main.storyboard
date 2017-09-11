@@ -63,7 +63,7 @@
         <!--Photo View Controller-->
         <scene sceneID="WoH-oA-Hz7">
             <objects>
-                <viewController id="vcr-KC-tlF" customClass="PhotoViewController" customModule="VirtualTourist" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="PhotoViewController" id="vcr-KC-tlF" customClass="PhotoViewController" customModule="VirtualTourist" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="HQj-kb-SEA"/>
                         <viewControllerLayoutGuide type="bottom" id="p9k-8r-gMT"/>
