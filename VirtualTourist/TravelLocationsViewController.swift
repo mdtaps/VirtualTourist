@@ -135,7 +135,22 @@ extension TravelLocationsViewController {
             return
         }
         
+        let fetchRequest = NSFetchRequest<Photo>()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: Constants.PhotoAttributeNames.Photo, ascending: true)]
+        
+        let predicate = NSPredicate(format: "pin = %@", argumentArray: [pin])
+        fetchRequest.predicate = predicate
+        
+        guard let context = fetchedResultsController?.managedObjectContext else {
+            print("No fetchedResultsController set")
+            return
+        }
+        
+        let frController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
+        
+        photoVC.fetchedResultsController = frController as? NSFetchedResultsController<NSFetchRequestResult>
         photoVC.pin = pin
+        
         navigationController?.pushViewController(photoVC, animated: true)
     }
 }

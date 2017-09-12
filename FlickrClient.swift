@@ -16,6 +16,8 @@ class FlickrClient {
     
     let session = URLSession.shared
     var parameters = [String: String]()
+    
+    //TODO: Add parameter to limit amount of URLs downloaded
     var defaultUrlParameters = [FlickrConstants.URLParameterKeys.Method        : FlickrConstants.URLParameterValues.Method,
                                 FlickrConstants.URLParameterKeys.APIKey        : FlickrConstants.URLParameterValues.APIKey,
                                 FlickrConstants.URLParameterKeys.Radius        : FlickrConstants.URLParameterValues.Radius,
