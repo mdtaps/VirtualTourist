@@ -31,6 +31,7 @@
 		F4A283CE1F4EB05300F043EA /* DeleteModeLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A283CD1F4EB05300F043EA /* DeleteModeLabel.swift */; };
 		F4A283D11F4EC61300F043EA /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A283D01F4EC61300F043EA /* Extensions.swift */; };
 		F4A283D61F54002700F043EA /* CoreDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A283D51F54002700F043EA /* CoreDataViewController.swift */; };
+		F4ED3FC21F68DDB500740321 /* PhotoCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4ED3FC11F68DDB500740321 /* PhotoCollectionViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -82,6 +83,7 @@
 		F4A283D01F4EC61300F043EA /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		F4A283D21F52A28500F043EA /* TouristDataModel 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "TouristDataModel 2.xcdatamodel"; sourceTree = "<group>"; };
 		F4A283D51F54002700F043EA /* CoreDataViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataViewController.swift; sourceTree = "<group>"; };
+		F4ED3FC11F68DDB500740321 /* PhotoCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PhotoCollectionViewCell.swift; path = VirtualTourist/PhotoCollectionViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -212,6 +214,7 @@
 		F4A283CF1F4EC20800F043EA /* View */ = {
 			isa = PBXGroup;
 			children = (
+				F4ED3FC11F68DDB500740321 /* PhotoCollectionViewCell.swift */,
 				F4A283CD1F4EB05300F043EA /* DeleteModeLabel.swift */,
 			);
 			name = View;
@@ -359,6 +362,7 @@
 				F4A283B21F4BDDAB00F043EA /* CoreDataStack.swift in Sources */,
 				F4A283D61F54002700F043EA /* CoreDataViewController.swift in Sources */,
 				F4A283C51F4BEA2000F043EA /* Photo+CoreDataClass.swift in Sources */,
+				F4ED3FC21F68DDB500740321 /* PhotoCollectionViewCell.swift in Sources */,
 				F4A283C41F4BEA2000F043EA /* Pin+CoreDataProperties.swift in Sources */,
 				F4A283C31F4BEA2000F043EA /* Pin+CoreDataClass.swift in Sources */,
 				F4A283861F4BD84700F043EA /* TravelLocationsViewController.swift in Sources */,

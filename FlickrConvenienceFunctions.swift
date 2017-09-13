@@ -12,7 +12,7 @@ import CoreData
 
 extension FlickrClient {
     
-    func retrieve(picturesFor pin: MKAnnotation?, completionHanderForRetrieve: @escaping (_ response: Response<[URL]>) -> Void) {
+    func retrieve(picturesFor pin: MKAnnotation?, pageNumber page: Int = 1, completionHanderForRetrieve: @escaping (_ response: Response<[URL]>) -> Void) {
         
         guard let pin = pin else {
             completionHanderForRetrieve(Response.Failure(errorMessage: "Pin not set"))

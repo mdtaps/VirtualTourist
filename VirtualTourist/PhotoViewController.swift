@@ -10,6 +10,10 @@ import UIKit
 import CoreData
 import MapKit
 
+//TODO: Setup Flickr request URL to take page number paramenter
+//TODO: If page number is greater than number of pages,
+//      restart the page 
+
 class PhotoViewController: CoreDataViewController {
     
     var pin: Pin?
@@ -64,15 +68,44 @@ extension PhotoViewController: NSFetchedResultsControllerDelegate {
 extension PhotoViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 0
+        guard let sections = fetchedResultsController?.sections?.count else {
+            return 0
+        }
+        
+        return sections
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        <#code#>
+        
+        guard let sections = fetchedResultsController?.sections else {
+            return 0
+        }
+        
+        if sections[section].numberOfObjects > 21 {
+            return 21
+        } else {
+            return sections[section].numberOfObjects
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        let cell = photosCollectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath)
+        //TODO: Display loading wheel
+        
+        guard let cell = photosCollectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as? PhotoCollectionViewCell else {
+            
+            //TODO: Show error
+            return UICollectionViewCell()
+        }
+        
+        
+        
+        for data in (pin?.photo)! {
+            
+            return UICollectionViewCell()
+            
+        }
+        
+        return UICollectionViewCell()
     }
 }
