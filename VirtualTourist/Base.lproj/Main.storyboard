@@ -118,8 +118,8 @@
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="collectionView" destination="PX9-CV-j0I" id="dbI-N6-PWI"/>
                         <outlet property="mapView" destination="Zx1-Rs-Bbr" id="ZAs-yv-C0L"/>
+                        <outlet property="photosCollectionView" destination="PX9-CV-j0I" id="PGZ-jq-6lj"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Vpk-gS-yQs" userLabel="First Responder" sceneMemberID="firstResponder"/>

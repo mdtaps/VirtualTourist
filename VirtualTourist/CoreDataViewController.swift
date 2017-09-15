@@ -19,11 +19,18 @@ class CoreDataViewController: UIViewController {
                 fetchedResultsController?.delegate = delegate
             }
             
-            do {
-                try fetchedResultsController?.performFetch()
-            } catch let error as NSError {
-                print("Error while trying to perform search: \n \(error)")
+            guard let entities = fetchedResultsController?.fetchedObjects else {
+                return
             }
+            
+            if !entities.isEmpty {
+                do {
+                    try fetchedResultsController?.performFetch()
+                } catch let error as NSError {
+                    print("Error while trying to perform search: \n \(error)")
+                }
+            }
+            
         }
     }
     

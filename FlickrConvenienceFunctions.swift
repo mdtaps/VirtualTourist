@@ -12,16 +12,16 @@ import CoreData
 
 extension FlickrClient {
     
-    func retrieve(picturesFor pin: MKAnnotation?, pageNumber page: Int = 1, completionHanderForRetrieve: @escaping (_ response: Response<[URL]>) -> Void) {
+    func retrieve(picturesFor pin: MKAnnotation?, picturesAt pageNumber: Int, completionHanderForRetrieve: @escaping (_ result: UrlResult) -> Void) {
         
         guard let pin = pin else {
-            completionHanderForRetrieve(Response.Failure(errorMessage: "Pin not set"))
+            completionHanderForRetrieve(UrlResult.Failure(errorMessage: "Pin not set"))
             return
         }
         
-        populatePin(latitude: pin.coordinate.latitude, longitude: pin.coordinate.longitude) { (response) in
+        populatePin(latitude: pin.coordinate.latitude, longitude: pin.coordinate.longitude, page: pageNumber) { (result) in
             
-            completionHanderForRetrieve(response)
+            completionHanderForRetrieve(result)
 
                 //TODO: Return success or failure
                 /*      populatePhoto() {
@@ -31,14 +31,15 @@ extension FlickrClient {
         }
     }
     
-    func populatePin(latitude: Double, longitude: Double, completionHandlerForPopulate: @escaping (Response<[URL]>) -> Void) {
+    func populatePin(latitude: Double, longitude: Double, page: Int, completionHandlerForPopulate: @escaping (_ result: UrlResult) -> Void) {
         
         func sendError(withMessage message: String) {
             completionHandlerForPopulate(.Failure(errorMessage: message))
         }
         
-        parameters = [FlickrConstants.URLParameterKeys.Latitude: String(latitude),
-                      FlickrConstants.URLParameterKeys.Longitude: String(longitude)]
+        urlParameters[FlickrConstants.URLParameterKeys.Latitude] = String(latitude)
+        urlParameters[FlickrConstants.URLParameterKeys.Longitude] = String(longitude)
+        urlParameters[FlickrConstants.URLParameterKeys.Page] = String(page)
         
         flickrGETTask() { (dataResponse) in
             
@@ -52,6 +53,11 @@ extension FlickrClient {
                 
                 guard let photos = parsedData?[FlickrConstants.JSONResponseKeys.Photos] as? [String: AnyObject] else {
                     sendError(withMessage: "Could not find \"photos\" in \(String(describing: parsedData))")
+                    return
+                }
+                
+                guard let pages = photos[FlickrConstants.JSONResponseKeys.Pages] as? NSNumber else {
+                    sendError(withMessage: "Could not find \"pages\" in \(String(describing: parsedData))")
                     return
                 }
                 
@@ -90,11 +96,9 @@ extension FlickrClient {
                     } else {
                         continue
                     }
-                    
-                    
                 }
                 
-                completionHandlerForPopulate(.Success(with: urls))
+                completionHandlerForPopulate(.Success(urls: urls, numberOfPages: pages as Int))
             }
 
         }

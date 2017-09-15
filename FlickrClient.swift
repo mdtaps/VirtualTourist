@@ -15,14 +15,14 @@ class FlickrClient {
     private init() { }
     
     let session = URLSession.shared
-    var parameters = [String: String]()
     
     //TODO: Add parameter to limit amount of URLs downloaded
-    var defaultUrlParameters = [FlickrConstants.URLParameterKeys.Method        : FlickrConstants.URLParameterValues.Method,
-                                FlickrConstants.URLParameterKeys.APIKey        : FlickrConstants.URLParameterValues.APIKey,
-                                FlickrConstants.URLParameterKeys.Radius        : FlickrConstants.URLParameterValues.Radius,
-                                FlickrConstants.URLParameterKeys.Format        : FlickrConstants.URLParameterValues.Format,
-                                FlickrConstants.URLParameterKeys.NoJsonCallBack: FlickrConstants.URLParameterValues.NoJsonCallBack]
+    var urlParameters = [FlickrConstants.URLParameterKeys.Method        : FlickrConstants.URLParameterValues.Method,
+                         FlickrConstants.URLParameterKeys.APIKey        : FlickrConstants.URLParameterValues.APIKey,
+                         FlickrConstants.URLParameterKeys.Radius        : FlickrConstants.URLParameterValues.Radius,
+                         FlickrConstants.URLParameterKeys.Format        : FlickrConstants.URLParameterValues.Format,
+                         FlickrConstants.URLParameterKeys.NoJsonCallBack: FlickrConstants.URLParameterValues.NoJsonCallBack,
+                         FlickrConstants.URLParameterKeys.PerPage       : FlickrConstants.URLParameterValues.PerPage]
     
     func flickrGETTask(_ completionHandlerForGET: @escaping (_ dataRequest: Response<Data>) -> Void) {
         guard let request = flickrGETRequest() else {
@@ -81,12 +81,7 @@ class FlickrClient {
         components.path = FlickrConstants.APIConstants.Path
         var queryItems = [URLQueryItem]()
         
-        for (key, value) in defaultUrlParameters {
-            queryItems.append(URLQueryItem(name: key, value: value))
-            
-        }
-        
-        for (key, value) in parameters {
+        for (key, value) in urlParameters {
             queryItems.append(URLQueryItem(name: key, value: value))
             
         }
@@ -144,5 +139,10 @@ enum StatusCode: CustomStringConvertible {
 
 enum Response<T> {
     case Success(with: T)
+    case Failure(errorMessage: String)
+}
+
+enum UrlResult {
+    case Success(urls: [URL], numberOfPages: Int)
     case Failure(errorMessage: String)
 }

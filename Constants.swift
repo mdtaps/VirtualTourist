@@ -43,7 +43,9 @@ struct FlickrConstants {
         static let Longitude = "lon"
         static let Radius = "radius"
         static let Format = "format"
+        static let Page = "page"
         static let NoJsonCallBack = "nojsoncallback"
+        static let PerPage = "per_page"
     }
     
     struct URLParameterValues {
@@ -52,6 +54,7 @@ struct FlickrConstants {
         static let Radius = "1"
         static let Format = "json"
         static let NoJsonCallBack = "1"
+        static let PerPage = "21"
     }
     
     struct HTTPHeaderKeys {

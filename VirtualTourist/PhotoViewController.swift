@@ -12,13 +12,15 @@ import MapKit
 
 //TODO: Setup Flickr request URL to take page number paramenter
 //TODO: If page number is greater than number of pages,
-//      restart the page 
+//      restart the page
 
 class PhotoViewController: CoreDataViewController {
     
     var pin: Pin?
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var photosCollectionView: UICollectionView!
+    var currentPage = 0
+    var numberOfPages: Int = 1
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,21 +33,40 @@ class PhotoViewController: CoreDataViewController {
         
         //TODO: Check for photos already loaded
         
-        FlickrClient.shared.retrieve(picturesFor: pin) { (response) in
+        currentPage += 1
+        
+        if currentPage > numberOfPages {
+            currentPage = 1
+        }
+        
+        FlickrClient.shared.retrieve(picturesFor: pin, picturesAt: currentPage) { (response) in
             switch response {
             case .Failure(let errorMessage):
                 print(errorMessage)
             //TODO: Display error
-            case .Success(let urls):
+            case .Success(let urls, let numberOfPages):
+                
+                if urls.isEmpty {
+                    //TODO: Display No Pictures Found message
+                }
+                
                 guard let context = self.fetchedResultsController?.managedObjectContext else {
                     //TODO: Display error
                     print("Failed to get context")
                     return
                 }
                 
+                self.numberOfPages = numberOfPages
+                
                 for url in urls {
                     let _ = Photo(photoUrl: url, context: context)
                 }
+                
+                DispatchQueue.main.async {
+                    self.photosCollectionView.reloadData()
+                }
+                
+                //TODO: Get photo asyncronously
             }
         }
     }
@@ -98,14 +119,13 @@ extension PhotoViewController: UICollectionViewDelegate, UICollectionViewDataSou
             return UICollectionViewCell()
         }
         
-        
-        
-        for data in (pin?.photo)! {
-            
-            return UICollectionViewCell()
-            
+        guard let entity = fetchedResultsController?.object(at: indexPath) as? Photo,
+              let data = entity.photo else {
+            fatalError("No fetchedResultsController set in collection view cellforitemat indexpath")
         }
         
-        return UICollectionViewCell()
+        cell.imageView.image = UIImage(data: data as Data)
+        
+        return cell
     }
 }
