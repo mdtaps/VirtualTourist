@@ -100,6 +100,7 @@
                                         </view>
                                         <connections>
                                             <outlet property="image" destination="1wk-aU-ExG" id="pyT-Ne-RPO"/>
+                                            <outlet property="imageView" destination="1wk-aU-ExG" id="TdK-zu-d9n"/>
                                         </connections>
                                     </collectionViewCell>
                                 </cells>

@@ -72,6 +72,8 @@ class PhotoViewController: CoreDataViewController {
     }
     
     func setupCollectionView() {
+        photosCollectionView.delegate = self
+        
         let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
         let width = UIScreen.main.bounds.width
         layout.sectionInset = UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 5)
@@ -83,7 +85,8 @@ class PhotoViewController: CoreDataViewController {
 }
 
 extension PhotoViewController: NSFetchedResultsControllerDelegate {
-    
+    //TODO: Setup cell reload when Photo added
+
 }
 
 extension PhotoViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {

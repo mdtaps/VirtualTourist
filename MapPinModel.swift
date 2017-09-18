@@ -15,7 +15,7 @@ protocol PinDelegate {
     weak var mapView: MKMapView! { get set }
 }
 
-struct PinModel {
+class PinModel: NSObject {
     
     var delegate: PinDelegate?
     
@@ -32,6 +32,13 @@ struct PinModel {
         
         let _ = Pin(coordinate: coordinateOnMap,
                     context: context)
+        
+        do {
+            try delegate?.fetchedResultsController?.performFetch()
+        } catch {
+            print("bummer")
+        }
+        dump(delegate?.fetchedResultsController?.fetchedObjects)
     }
     
     func loadPins() {
@@ -69,6 +76,30 @@ struct PinModel {
         
         context.delete(annotation)
     }
+}
 
+extension PinModel: NSFetchedResultsControllerDelegate {
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+        
+        guard let pin = anObject as? Pin else {
+            preconditionFailure("All changes in Map View Controller should be for Pins")
+        }
+        
+        switch type {
+        case .insert:
+            delegate?.mapView.addAnnotation(pin)
+            
+        case .delete:
+            delegate?.mapView.removeAnnotation(pin)
+            
+        case .update:
+            delegate?.mapView.removeAnnotation(pin)
+            delegate?.mapView.addAnnotation(pin)
+            
+        case .move:
+            fatalError("You can't move pins!")
+        }
+    }
 
 }
