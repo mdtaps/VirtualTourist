@@ -48,6 +48,7 @@ class PhotoViewController: CoreDataViewController {
             case .Success(let urls, let numberOfPages):
                 
                 if urls.isEmpty {
+                    print("No Pictures Found")
                     //TODO: Display No Pictures Found message
                 }
                 
