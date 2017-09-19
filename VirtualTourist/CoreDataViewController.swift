@@ -11,28 +11,7 @@ import CoreData
 
 class CoreDataViewController: UIViewController {
     
-    var fetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>? {
-        
-        didSet {
-            
-            if let delegate = self as? NSFetchedResultsControllerDelegate {
-                fetchedResultsController?.delegate = delegate
-            }
-            
-            guard let entities = fetchedResultsController?.fetchedObjects else {
-                return
-            }
-            
-            if !entities.isEmpty {
-                do {
-                    try fetchedResultsController?.performFetch()
-                } catch let error as NSError {
-                    print("Error while trying to perform search: \n \(error)")
-                }
-            }
-            
-        }
-    }
+    var fetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>?
     
     func createFetchedResultsController(for managedObject: NSManagedObject.Type, sortingBy descriptor: String? = nil) -> NSFetchedResultsController<NSFetchRequestResult> {
         

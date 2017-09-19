@@ -34,6 +34,7 @@ class TravelLocationsViewController: CoreDataViewController, PinDelegate {
         view.addSubview(label)
         
         //Set up Delegates
+        fetchedResultsController?.delegate = self
         pinModel.delegate = self
     }
     
@@ -102,7 +103,6 @@ extension TravelLocationsViewController: MKMapViewDelegate {
 //MARK: FetchedResultsControllerDelegate Functions
 
 extension TravelLocationsViewController: NSFetchedResultsControllerDelegate {
-
 
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         

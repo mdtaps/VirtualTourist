@@ -25,6 +25,7 @@ class PhotoViewController: CoreDataViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        fetchedResultsController?.delegate = self
         loadPhotos()
         setupCollectionView()
     }
