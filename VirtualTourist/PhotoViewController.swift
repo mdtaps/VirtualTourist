@@ -21,17 +21,33 @@ class PhotoViewController: CoreDataViewController {
     @IBOutlet weak var photosCollectionView: UICollectionView!
     var currentPage = 0
     var numberOfPages: Int = 1
+    var urls = [URL]() {
+        didSet {
+            if self.urls.isEmpty == false {
+                for url in self.urls {
+                    let photo = Photo(photoUrl: url, context: fetchedResultsController!.managedObjectContext)
+                    photo.pin = pin
+                }
+            }
+        }
+        
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         fetchedResultsController?.delegate = self
+        print(fetchedResultsController?.delegate)
         loadPhotos()
         setupCollectionView()
     }
 
      func loadPhotos() {
         
+        if let objects = fetchedResultsController?.fetchedObjects, objects.isEmpty != true {
+            
+            print("We have pictures in the store!")
+        }
         //TODO: Check for photos already loaded
         
         currentPage += 1
@@ -59,23 +75,13 @@ class PhotoViewController: CoreDataViewController {
                 }
                 
                 self.numberOfPages = numberOfPages
-    
-                print("Number of pages is \(self.numberOfPages)")
-                
-                for url in urls {
-                    let _ = Photo(photoUrl: url, context: context)
-                }
+                self.urls = urls
                 
                 do {
                     try self.fetchedResultsController?.performFetch()
                 } catch {
                     print(error)
                 }
-                
-                DispatchQueue.main.async {
-                    self.photosCollectionView.reloadData()
-                }
-                
                 //TODO: Get photo asyncronously
             }
         }
@@ -96,7 +102,7 @@ class PhotoViewController: CoreDataViewController {
 }
 
 extension PhotoViewController: NSFetchedResultsControllerDelegate {
-
+    
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
         
         let set = IndexSet(integer: sectionIndex)
@@ -116,7 +122,7 @@ extension PhotoViewController: NSFetchedResultsControllerDelegate {
         
         switch(type) {
         case .insert:
-            photosCollectionView.insertItems(at: [newIndexPath!])
+            photosCollectionView.reloadItems(at: [newIndexPath!])
         case .delete:
             photosCollectionView.insertItems(at: [indexPath!])
         case .update:
@@ -136,19 +142,19 @@ extension PhotoViewController: UICollectionViewDelegate, UICollectionViewDataSou
             return 0
         }
         
-        print(sections)
+        print("There are \(sections) sections")
         return sections
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
+        print("About to start numberofitemsinsection")
         guard let sections = fetchedResultsController?.sections else {
             print("The sections in the fetched results controller are: \(fetchedResultsController?.sections)")
             return 0
         }
         
         //TODO: Return number of items on page from Flickr
-        
         return 21
         
 //        print("There are \(sections[section].numberOfObjects) objects in section")
@@ -163,7 +169,6 @@ extension PhotoViewController: UICollectionViewDelegate, UICollectionViewDataSou
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         //TODO: Display loading wheel
-        
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as? PhotoCollectionViewCell else {
             
             //TODO: Show error
@@ -171,12 +176,22 @@ extension PhotoViewController: UICollectionViewDelegate, UICollectionViewDataSou
             return UICollectionViewCell()
         }
         
-        guard let entity = fetchedResultsController?.object(at: indexPath) as? Photo,
-              let data = entity.photo else {
-            fatalError("No fetchedResultsController set in collection view cellforitemat indexpath")
-        }
+        print("Cell made")
         
-        cell.imageView.image = UIImage(data: data as Data)
+        if fetchedResultsController?.fetchedObjects?.isEmpty == false {
+            print("Returned true")
+            guard let entity = fetchedResultsController?.object(at: indexPath) as? Photo,
+                  let data = entity.photo else {
+                fatalError("No fetchedResultsController set in collection view cellforitemat indexpath")
+            }
+            
+            print("About to print data")
+            
+            cell.imageView.image = UIImage(data: data as Data)
+        } else {
+            cell.backgroundColor = .black
+
+        }
         
         return cell
     }
