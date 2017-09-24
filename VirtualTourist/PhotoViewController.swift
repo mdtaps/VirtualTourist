@@ -21,23 +21,29 @@ class PhotoViewController: CoreDataViewController {
     @IBOutlet weak var photosCollectionView: UICollectionView!
     var currentPage = 0
     var numberOfPages: Int = 1
+    var blockOperation: [BlockOperation] = []
+    
     var urls = [URL]() {
         didSet {
-            if self.urls.isEmpty == false {
-                for url in self.urls {
-                    let photo = Photo(photoUrl: url, context: fetchedResultsController!.managedObjectContext)
-                    photo.pin = pin
-                }
+            guard let context = fetchedResultsController?.managedObjectContext else {
+                fatalError("Could not get context while adding photos in PhotoViewController")
+            }
+            
+            guard let pin = pin else {
+                fatalError("No pin set while saving photos in PhotoViewController")
+            }
+            
+            for url in self.urls {
+                let photo = Photo(photoUrl: url, context: context)
+                photo.pin = pin
             }
         }
-        
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         fetchedResultsController?.delegate = self
-        print(fetchedResultsController?.delegate)
         loadPhotos()
         setupCollectionView()
     }
@@ -102,7 +108,7 @@ class PhotoViewController: CoreDataViewController {
 }
 
 extension PhotoViewController: NSFetchedResultsControllerDelegate {
-    
+        
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
         
         let set = IndexSet(integer: sectionIndex)
@@ -120,21 +126,33 @@ extension PhotoViewController: NSFetchedResultsControllerDelegate {
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         
-        switch(type) {
+        switch type {
         case .insert:
-            photosCollectionView.reloadItems(at: [newIndexPath!])
+            photosCollectionView.insertItems(at: [newIndexPath!])
         case .delete:
-            photosCollectionView.insertItems(at: [indexPath!])
+            photosCollectionView.deleteItems(at: [indexPath!])
         case .update:
             photosCollectionView.reloadItems(at: [indexPath!])
         case .move:
             photosCollectionView.deleteItems(at: [indexPath!])
             photosCollectionView.insertItems(at: [newIndexPath!])
         }
+            
+//        case .insert:
+//            let operation = BlockOperation(block: { 
+//                self.photosCollectionView.insertItems(at: [newIndexPath!])
+//            })
+//            blockOperation.append(operation)
+//        case .delete:
+//            let operation = BlockOperation(block: {
+//                self.photosCollectionView.insertItems(at: [newIndexPath!])
+//            })
+//            blockOperation.append(operation)
+//        }
     }
 }
 
-extension PhotoViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+extension PhotoViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         guard let sections = fetchedResultsController?.sections?.count else {
@@ -148,22 +166,12 @@ extension PhotoViewController: UICollectionViewDelegate, UICollectionViewDataSou
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        print("About to start numberofitemsinsection")
         guard let sections = fetchedResultsController?.sections else {
             print("The sections in the fetched results controller are: \(fetchedResultsController?.sections)")
             return 0
         }
         
-        //TODO: Return number of items on page from Flickr
-        return 21
-        
-//        print("There are \(sections[section].numberOfObjects) objects in section")
-//        
-//        if sections[section].numberOfObjects >= 21 {
-//            return 21
-//        } else {
-//            return sections[section].numberOfObjects
-//        }
+        return sections[section].numberOfObjects
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -176,18 +184,21 @@ extension PhotoViewController: UICollectionViewDelegate, UICollectionViewDataSou
             return UICollectionViewCell()
         }
         
-        print("Cell made")
-        
         if fetchedResultsController?.fetchedObjects?.isEmpty == false {
-            print("Returned true")
+            print("There are fetched objects")
+            
+            
             guard let entity = fetchedResultsController?.object(at: indexPath) as? Photo,
                   let data = entity.photo else {
                 fatalError("No fetchedResultsController set in collection view cellforitemat indexpath")
             }
             
-            print("About to print data")
+            let image = UIImage(data: data as Data, scale: 1.0)
             
-            cell.imageView.image = UIImage(data: data as Data)
+            print("About to print data: \(data)")
+
+            cell.imageView.image = image
+            
         } else {
             cell.backgroundColor = .black
 

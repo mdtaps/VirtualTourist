@@ -2,7 +2,7 @@
 //  Photo+CoreDataProperties.swift
 //  VirtualTourist
 //
-//  Created by Mark Tapia on 8/21/17.
+//  Created by Mark Tapia on 9/24/17.
 //  Copyright © 2017 Mark Tapia. All rights reserved.
 //
 
@@ -17,6 +17,7 @@ extension Photo {
     }
 
     @NSManaged public var photo: NSData?
+    @NSManaged public var creationDate: NSDate?
     @NSManaged public var pin: Pin?
 
 }

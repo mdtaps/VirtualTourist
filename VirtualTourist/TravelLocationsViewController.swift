@@ -137,7 +137,7 @@ extension TravelLocationsViewController {
         }
         
         let fetchRequest: NSFetchRequest<NSFetchRequestResult> = Photo.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: Constants.PhotoAttributeNames.Photo, ascending: true)]
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: Constants.PhotoAttributeNames.Photo, ascending: false), NSSortDescriptor(key: Constants.PhotoAttributeNames.CreationDate, ascending: true)]
         
         let predicate = NSPredicate(format: "pin = %@", argumentArray: [pin])
         fetchRequest.predicate = predicate

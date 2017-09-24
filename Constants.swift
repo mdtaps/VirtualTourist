@@ -25,6 +25,7 @@ struct Constants {
     
     struct PhotoAttributeNames {
         static let Photo = "photo"
+        static let CreationDate = "creationDate"
     }
 }
 

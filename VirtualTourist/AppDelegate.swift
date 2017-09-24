@@ -12,22 +12,16 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-    var stack: CoreDataStack? = nil
+    var stack = CoreDataStack(modelName: "TouristDataModel")!
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
-        
-        if let stack = CoreDataStack(modelName: "TouristDataModel") {
-            self.stack = stack
-        } else {
-            fatalError("Cannont instantiate data stack")
-        }
         
         return true
     }
 
     func applicationDidEnterBackground(_ application: UIApplication) {
-        stack?.save()
+        stack.save()
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {
@@ -39,7 +33,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
-        stack?.save()
+        stack.save()
     }
 
 

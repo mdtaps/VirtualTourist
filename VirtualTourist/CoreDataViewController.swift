@@ -11,6 +11,8 @@ import CoreData
 
 class CoreDataViewController: UIViewController {
     
+    let delegate = UIApplication.shared.delegate as! AppDelegate
+    
     var fetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>? {
         
         didSet {
@@ -26,12 +28,6 @@ class CoreDataViewController: UIViewController {
     }
     
     func createFetchedResultsController(for managedObject: NSManagedObject.Type, sortingBy descriptor: String? = nil) -> NSFetchedResultsController<NSFetchRequestResult> {
-        
-        let delegate = UIApplication.shared.delegate as! AppDelegate
-        guard let stack = delegate.stack else {
-            
-            fatalError("Could not refrence stack in Travel Locations VC")
-        }
         
         //Create fetch request
         let fetchRequest: NSFetchRequest<NSFetchRequestResult> = managedObject.fetchRequest()
@@ -52,7 +48,7 @@ class CoreDataViewController: UIViewController {
         fetchRequest.sortDescriptors = descriptors
         
         //Return fetchedresultsController
-        return NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: stack.context, sectionNameKeyPath: nil, cacheName: nil)
+        return NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: delegate.stack.context, sectionNameKeyPath: nil, cacheName: nil)
         
     }
 }
