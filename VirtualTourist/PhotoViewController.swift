@@ -16,42 +16,37 @@ import MapKit
 
 class PhotoViewController: CoreDataViewController {
     
-    var pin: Pin?
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var photosCollectionView: UICollectionView!
+    @IBOutlet weak var collectionViewLabel: UILabel!
+    
+    var pin: Pin?
     var currentPage = 0
     var numberOfPages: Int = 1
     var blockOperation: [BlockOperation] = []
     var hasPhotos = false
     var perPage: Int? {
         didSet {
-            photosCollectionView.reloadData()
+            DispatchQueue.main.async {
+                self.photosCollectionView.reloadData()
+            }
         }
     }
-
     
     var urls = [URL]() {
         didSet {
-            
-            DispatchQueue.main.async {
-                self.delegate.stack.performBackgroundBatchOperation { (workerContext) in
-                    let pinId = self.pin?.objectID
-                    
-                    do {
-                        let myPin = try workerContext.existingObject(with: pinId!) as? Pin
-                        
-                        for url in self.urls {
-                            let photo = Photo(photoUrl: url, context: workerContext)
-                            photo.pin = myPin
-                            
-                        }
-                    } catch let e as NSError {
-                        print("There was an error: \(e.localizedDescription)")
-                    }
-                    
-                    self.hasPhotos = true
+            self.delegate.stack.performBackgroundBatchOperation { (workerContext) in
+                let pinId = self.pin?.objectID
+                
+                let myPin = workerContext.object(with: pinId!) as? Pin
+                
+                for url in self.urls {
+                    let photo = Photo(photoUrl: url, context: workerContext)
+                    photo.pin = myPin
                     
                 }
+                self.hasPhotos = true
+                
             }
         }
     }
@@ -88,20 +83,17 @@ class PhotoViewController: CoreDataViewController {
                 
                 if urls.isEmpty {
                     print("No Pictures Found")
+                    self.perPage = 0
+                    return
                     //TODO: Display No Pictures Found message
                 }
                 
-                guard let context = self.fetchedResultsController?.managedObjectContext else {
-                    //TODO: Display error
-                    print("Failed to get context")
-                    return
-                }
-                
                 self.numberOfPages = numberOfPages
-                DispatchQueue.main.async {
-                    self.perPage = perPage
-                    self.urls = urls
-                }
+                self.perPage = perPage
+                
+                print("perPage is \(perPage)")
+                
+                self.urls = urls
                 
                 do {
                     try self.fetchedResultsController?.performFetch()
@@ -124,6 +116,8 @@ class PhotoViewController: CoreDataViewController {
         layout.minimumInteritemSpacing = 5
         layout.minimumLineSpacing = 5
         photosCollectionView.collectionViewLayout = layout
+        
+        collectionViewLabel.isHidden = true
     }
 }
 
@@ -148,7 +142,7 @@ extension PhotoViewController: NSFetchedResultsControllerDelegate {
         
         switch type {
         case .insert:
-            photosCollectionView.reloadData()
+            photosCollectionView.reloadItems(at: [newIndexPath!])
         case .delete:
             photosCollectionView.deleteItems(at: [indexPath!])
         case .update:
@@ -157,18 +151,6 @@ extension PhotoViewController: NSFetchedResultsControllerDelegate {
             photosCollectionView.deleteItems(at: [indexPath!])
             photosCollectionView.insertItems(at: [newIndexPath!])
         }
-            
-//        case .insert:
-//            let operation = BlockOperation(block: { 
-//                self.photosCollectionView.insertItems(at: [newIndexPath!])
-//            })
-//            blockOperation.append(operation)
-//        case .delete:
-//            let operation = BlockOperation(block: {
-//                self.photosCollectionView.insertItems(at: [newIndexPath!])
-//            })
-//            blockOperation.append(operation)
-//        }
     }
 }
 
@@ -190,7 +172,10 @@ extension PhotoViewController: UICollectionViewDelegate, UICollectionViewDataSou
             return 0
         }
         
+        print(perPage)
+        
         if perPage == 0 {
+            collectionViewLabel.isHidden = false
             return 0
             //TODO: Display "No data"
         } else {
