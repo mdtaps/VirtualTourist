@@ -62,7 +62,7 @@ class PhotoViewController: CoreDataViewController {
         
     }
 
-     func loadPhotos() {
+     @IBAction func loadPhotos() {
         
         if let objects = fetchedResultsController?.fetchedObjects, objects.isEmpty != true {
             
