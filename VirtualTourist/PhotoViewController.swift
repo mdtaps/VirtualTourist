@@ -16,7 +16,7 @@ import MapKit
 
 class PhotoViewController: CoreDataViewController {
     
-    @IBOutlet weak var mapView: MKMapView!
+    @IBOutlet weak var photosMapView: MKMapView!
     @IBOutlet weak var photosCollectionView: UICollectionView!
     @IBOutlet weak var collectionViewLabel: UILabel!
     
@@ -55,9 +55,11 @@ class PhotoViewController: CoreDataViewController {
         super.viewDidLoad()
         
         fetchedResultsController?.delegate = self
+        photosMapView.delegate = self
+        
         loadPhotos()
         setupCollectionView()
-
+        
     }
 
      func loadPhotos() {
@@ -205,5 +207,38 @@ extension PhotoViewController: UICollectionViewDelegate, UICollectionViewDataSou
         }
         
         return cell
+    }
+}
+
+extension PhotoViewController: MKMapViewDelegate {
+    
+    func mapViewDidFinishRenderingMap(_ mapView: MKMapView, fullyRendered: Bool) {
+        guard let pin = pin else {
+            fatalError("No pin set for viewDidLoad")
+        }
+        
+        let span = MKCoordinateSpanMake(0.5, 0.5)
+        let region = MKCoordinateRegion(center: pin.coordinate, span: span)
+        
+        mapView.setRegion(region, animated: true)
+        
+        mapView.addAnnotation(pin)
+    }
+    
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        
+        let reuseId = "pin"
+        
+        var pinObject = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? MKPinAnnotationView
+        
+        if pinObject == nil {
+            pinObject = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
+            pinObject?.canShowCallout = false
+            pinObject?.animatesDrop = false
+            pinObject?.tintColor = .red
+        } else {
+            pinObject?.annotation = annotation
+        }
+        return pinObject
     }
 }

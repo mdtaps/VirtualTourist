@@ -131,8 +131,8 @@
                     </view>
                     <connections>
                         <outlet property="collectionViewLabel" destination="GAI-5x-tBh" id="OYH-9j-49X"/>
-                        <outlet property="mapView" destination="Zx1-Rs-Bbr" id="ZAs-yv-C0L"/>
                         <outlet property="photosCollectionView" destination="PX9-CV-j0I" id="7G3-wn-GP4"/>
+                        <outlet property="photosMapView" destination="Zx1-Rs-Bbr" id="WGW-HD-L8K"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Vpk-gS-yQs" userLabel="First Responder" sceneMemberID="firstResponder"/>
