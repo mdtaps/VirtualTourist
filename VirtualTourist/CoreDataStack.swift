@@ -110,8 +110,8 @@ extension CoreDataStack {
             // can work
             do {
                 try self.backgroundContext.save()
-            } catch {
-                fatalError("Error while saving backgroundContext: \(error)")
+            } catch let e as NSError {
+                print("Error while saving: \(e.localizedDescription)")
             }
         }
     }

@@ -143,6 +143,6 @@ enum Response<T> {
 }
 
 enum UrlResult {
-    case Success(urls: [URL], numberOfPages: Int)
+    case Success(urls: [URL], numberOfPages: Int, perPage: Int)
     case Failure(errorMessage: String)
 }

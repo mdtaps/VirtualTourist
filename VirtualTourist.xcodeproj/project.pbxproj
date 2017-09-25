@@ -32,6 +32,7 @@
 		F4ED3FC21F68DDB500740321 /* PhotoCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4ED3FC11F68DDB500740321 /* PhotoCollectionViewCell.swift */; };
 		F4FF5AD01F7796DF006DE169 /* Photo+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4FF5ACE1F7796DF006DE169 /* Photo+CoreDataClass.swift */; };
 		F4FF5AD11F7796DF006DE169 /* Photo+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4FF5ACF1F7796DF006DE169 /* Photo+CoreDataProperties.swift */; };
+		F4FF5AD31F7891D9006DE169 /* PhotoActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4FF5AD21F7891D9006DE169 /* PhotoActivityIndicator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -85,6 +86,7 @@
 		F4FF5ACD1F778139006DE169 /* TouristDataModel 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "TouristDataModel 3.xcdatamodel"; sourceTree = "<group>"; };
 		F4FF5ACE1F7796DF006DE169 /* Photo+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Photo+CoreDataClass.swift"; sourceTree = "<group>"; };
 		F4FF5ACF1F7796DF006DE169 /* Photo+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Photo+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		F4FF5AD21F7891D9006DE169 /* PhotoActivityIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PhotoActivityIndicator.swift; path = ../OnTheMap/OnTheMap/PhotoActivityIndicator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -215,6 +217,7 @@
 		F4A283CF1F4EC20800F043EA /* View */ = {
 			isa = PBXGroup;
 			children = (
+				F4FF5AD21F7891D9006DE169 /* PhotoActivityIndicator.swift */,
 				F4ED3FC11F68DDB500740321 /* PhotoCollectionViewCell.swift */,
 				F4A283CD1F4EB05300F043EA /* DeleteModeLabel.swift */,
 			);
@@ -375,6 +378,7 @@
 				F42744351F61029E00796149 /* PhotoViewController.swift in Sources */,
 				F4533BDB1F57E0AC0059787F /* FlickrClient.swift in Sources */,
 				F4A283841F4BD84700F043EA /* AppDelegate.swift in Sources */,
+				F4FF5AD31F7891D9006DE169 /* PhotoActivityIndicator.swift in Sources */,
 				F4A283CE1F4EB05300F043EA /* DeleteModeLabel.swift in Sources */,
 				F4A283D11F4EC61300F043EA /* Extensions.swift in Sources */,
 				F4A283C81F4BECE700F043EA /* Constants.swift in Sources */,

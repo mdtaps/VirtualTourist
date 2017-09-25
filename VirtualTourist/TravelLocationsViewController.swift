@@ -37,6 +37,18 @@ class TravelLocationsViewController: CoreDataViewController, PinDelegate {
         fetchedResultsController?.delegate = self
         pinModel.delegate = self
     }
+  
+    //TODO: Figure out if I need this
+//    override func viewWillDisappear(_ animated: Bool) {
+//        super.viewWillAppear(animated)
+//        
+//        fetchedResultsController?.delegate = nil
+//        
+//    }
+//    
+//    override func viewWillAppear(_ animated: Bool) {
+//        fetchedResultsController?.delegate = self
+//    }
     
     //MARK: Actions
     @IBAction func longPress(_ gestureRecognizer: UIGestureRecognizer) {
@@ -137,14 +149,13 @@ extension TravelLocationsViewController {
         }
         
         let fetchRequest: NSFetchRequest<NSFetchRequestResult> = Photo.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: Constants.PhotoAttributeNames.Photo, ascending: false), NSSortDescriptor(key: Constants.PhotoAttributeNames.CreationDate, ascending: true)]
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: Constants.PhotoAttributeNames.CreationDate, ascending: true)]
         
         let predicate = NSPredicate(format: "pin = %@", argumentArray: [pin])
         fetchRequest.predicate = predicate
         
         guard let context = fetchedResultsController?.managedObjectContext else {
-            print("No fetchedResultsController set")
-            return
+            fatalError("No context set in pushing photoVC")
         }
         
         let frController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)

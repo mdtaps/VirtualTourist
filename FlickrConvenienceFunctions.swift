@@ -61,6 +61,11 @@ extension FlickrClient {
                     return
                 }
                 
+                guard let perPage = photos[FlickrConstants.JSONResponseKeys.Perpage] as? NSNumber else {
+                    sendError(withMessage: "Could not find \"perpage\" in \(String(describing: parsedData))")
+                    return
+                }
+                
                 guard let photo = photos[FlickrConstants.JSONResponseKeys.Photo] as? [[String:AnyObject]] else {
                     sendError(withMessage: "Could not find \"photo\" in \(dump(photos))")
                     return
@@ -98,7 +103,7 @@ extension FlickrClient {
                     }
                 }
                 
-                completionHandlerForPopulate(.Success(urls: urls, numberOfPages: pages as Int))
+                completionHandlerForPopulate(.Success(urls: urls, numberOfPages: pages as Int, perPage: perPage as Int))
             }
 
         }

@@ -75,7 +75,7 @@
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="Zx1-Rs-Bbr">
                                 <rect key="frame" x="0.0" y="28" width="375" height="220"/>
                             </mapView>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="PX9-CV-j0I">
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceHorizontal="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="PX9-CV-j0I">
                                 <rect key="frame" x="0.0" y="256" width="375" height="391"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="7JF-n5-4u9">
@@ -92,12 +92,17 @@
                                             <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1wk-aU-ExG">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="1wk-aU-ExG">
                                                     <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 </imageView>
                                             </subviews>
                                         </view>
+                                        <constraints>
+                                            <constraint firstItem="1wk-aU-ExG" firstAttribute="leading" secondItem="2rR-6R-Qez" secondAttribute="leadingMargin" constant="-8" id="2YI-Qw-EBQ"/>
+                                            <constraint firstAttribute="trailingMargin" secondItem="1wk-aU-ExG" secondAttribute="trailing" constant="-8" id="2e3-zt-Tp6"/>
+                                            <constraint firstAttribute="bottomMargin" secondItem="1wk-aU-ExG" secondAttribute="bottom" constant="-8" id="HAF-ye-WNg"/>
+                                            <constraint firstItem="1wk-aU-ExG" firstAttribute="top" secondItem="2rR-6R-Qez" secondAttribute="topMargin" constant="-8" id="l3i-1I-7Pb"/>
+                                        </constraints>
                                         <connections>
                                             <outlet property="imageView" destination="1wk-aU-ExG" id="TdK-zu-d9n"/>
                                         </connections>

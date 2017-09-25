@@ -22,20 +22,36 @@ class PhotoViewController: CoreDataViewController {
     var currentPage = 0
     var numberOfPages: Int = 1
     var blockOperation: [BlockOperation] = []
+    var hasPhotos = false
+    var perPage: Int? {
+        didSet {
+            photosCollectionView.reloadData()
+        }
+    }
+
     
     var urls = [URL]() {
         didSet {
-            guard let context = fetchedResultsController?.managedObjectContext else {
-                fatalError("Could not get context while adding photos in PhotoViewController")
-            }
             
-            guard let pin = pin else {
-                fatalError("No pin set while saving photos in PhotoViewController")
-            }
-            
-            for url in self.urls {
-                let photo = Photo(photoUrl: url, context: context)
-                photo.pin = pin
+            DispatchQueue.main.async {
+                self.delegate.stack.performBackgroundBatchOperation { (workerContext) in
+                    let pinId = self.pin?.objectID
+                    
+                    do {
+                        let myPin = try workerContext.existingObject(with: pinId!) as? Pin
+                        
+                        for url in self.urls {
+                            let photo = Photo(photoUrl: url, context: workerContext)
+                            photo.pin = myPin
+                            
+                        }
+                    } catch let e as NSError {
+                        print("There was an error: \(e.localizedDescription)")
+                    }
+                    
+                    self.hasPhotos = true
+                    
+                }
             }
         }
     }
@@ -46,6 +62,7 @@ class PhotoViewController: CoreDataViewController {
         fetchedResultsController?.delegate = self
         loadPhotos()
         setupCollectionView()
+
     }
 
      func loadPhotos() {
@@ -67,7 +84,7 @@ class PhotoViewController: CoreDataViewController {
             case .Failure(let errorMessage):
                 print(errorMessage)
             //TODO: Display error
-            case .Success(let urls, let numberOfPages):
+            case .Success(let urls, let numberOfPages, let perPage):
                 
                 if urls.isEmpty {
                     print("No Pictures Found")
@@ -81,7 +98,10 @@ class PhotoViewController: CoreDataViewController {
                 }
                 
                 self.numberOfPages = numberOfPages
-                self.urls = urls
+                DispatchQueue.main.async {
+                    self.perPage = perPage
+                    self.urls = urls
+                }
                 
                 do {
                     try self.fetchedResultsController?.performFetch()
@@ -97,10 +117,10 @@ class PhotoViewController: CoreDataViewController {
         photosCollectionView.delegate = self
         photosCollectionView.dataSource = self
         
-        let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
+        let layout = UICollectionViewFlowLayout()
         let width = UIScreen.main.bounds.width
         layout.sectionInset = UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 5)
-        layout.itemSize = CGSize(width: width / 3, height: width / 3)
+        layout.itemSize = CGSize(width: width / 3 - 10, height: width / 3 - 10)
         layout.minimumInteritemSpacing = 5
         layout.minimumLineSpacing = 5
         photosCollectionView.collectionViewLayout = layout
@@ -128,7 +148,7 @@ extension PhotoViewController: NSFetchedResultsControllerDelegate {
         
         switch type {
         case .insert:
-            photosCollectionView.insertItems(at: [newIndexPath!])
+            photosCollectionView.reloadData()
         case .delete:
             photosCollectionView.deleteItems(at: [indexPath!])
         case .update:
@@ -166,12 +186,16 @@ extension PhotoViewController: UICollectionViewDelegate, UICollectionViewDataSou
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        guard let sections = fetchedResultsController?.sections else {
-            print("The sections in the fetched results controller are: \(fetchedResultsController?.sections)")
+        guard let perPage = perPage else {
             return 0
         }
         
-        return sections[section].numberOfObjects
+        if perPage == 0 {
+            return 0
+            //TODO: Display "No data"
+        } else {
+            return perPage
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -184,24 +208,15 @@ extension PhotoViewController: UICollectionViewDelegate, UICollectionViewDataSou
             return UICollectionViewCell()
         }
         
-        if fetchedResultsController?.fetchedObjects?.isEmpty == false {
-            print("There are fetched objects")
-            
-            
-            guard let entity = fetchedResultsController?.object(at: indexPath) as? Photo,
-                  let data = entity.photo else {
-                fatalError("No fetchedResultsController set in collection view cellforitemat indexpath")
+        if hasPhotos {
+            guard let photo = fetchedResultsController?.object(at: indexPath) as? Photo else {
+                fatalError("Could not get photo from fetched results contrtoller at \(indexPath)")
             }
             
-            let image = UIImage(data: data as Data, scale: 1.0)
-            
-            print("About to print data: \(data)")
-
-            cell.imageView.image = image
+            cell.imageView.image = UIImage(data: photo.photo! as Data)
             
         } else {
-            cell.backgroundColor = .black
-
+            cell.backgroundView = PhotoActivityIndicator().getActivityIndicator()
         }
         
         return cell
