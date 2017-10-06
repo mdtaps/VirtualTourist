@@ -21,88 +21,105 @@ class PhotoViewController: CoreDataViewController {
     @IBOutlet weak var collectionViewLabel: UILabel!
     
     var pin: Pin?
-    var currentPage = 0
-    var numberOfPages: Int = 1
-    var blockOperation: [BlockOperation] = []
-    var hasPhotos = false
-    var perPage: Int? {
-        didSet {
-            DispatchQueue.main.async {
-                self.photosCollectionView.reloadData()
-            }
-        }
-    }
+    var model = PhotoDataModel()
+    var mapModel: PhotoMapModel?
     
-    var urls = [URL]() {
-        didSet {
-            self.delegate.stack.performBackgroundBatchOperation { (workerContext) in
-                let pinId = self.pin?.objectID
-                
-                let myPin = workerContext.object(with: pinId!) as? Pin
-                
-                for url in self.urls {
-                    let photo = Photo(photoUrl: url, context: workerContext)
-                    photo.pin = myPin
-                    
-                }
-                self.hasPhotos = true
-                
-            }
-        }
-    }
+    var itemsToInsert = [IndexPath]()
+    var itemsToDelete = [IndexPath]()
+    var itemsToUpdate = [IndexPath]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         fetchedResultsController?.delegate = self
-        photosMapView.delegate = self
-        
-        loadPhotos()
+        mapModel = PhotoMapModel(pin)
+        photosMapView.delegate = mapModel
         setupCollectionView()
         
-    }
+        if let count = fetchedResultsController?.fetchedObjects?.count, count > 0 {
+            print("Items in context at beginning is \(count)")
+            model.numberOfItemsInCollectionView = count
+            photosCollectionView.reloadData()
+        } else {
+            loadPhotos {
+                self.createPhotoItems()
 
-     @IBAction func loadPhotos() {
+            }
+        }
+    }
+    
+    @IBAction func reloadPhotos() {
+        loadPhotos {
+            self.createPhotoItems()
+
+        }
+    }
+    
+    func createPhotoItems() {
+        guard let objects = fetchedResultsController?.fetchedObjects as? [Photo] else {
+            print("No FRC in retreivePicturesFor")
+            return
+        }
         
-        if let objects = fetchedResultsController?.fetchedObjects, objects.isEmpty != true {
+        if objects.count > 0 {
+            print("The number of objects being filled with urls is \(objects.count)")
             
-            print("We have pictures in the store!")
+            for (object, url) in zip(objects, model.urls) {
+                object.photo = NSData(contentsOf: url)
+            }
+            
+            DispatchQueue.main.async {
+                self.photosCollectionView.reloadData()
+            }
+            
+        } else {
+            guard let pinId = pin?.objectID else {
+                print("No pin found while retreiving pictures")
+                return
+            }
+            
+            let backgroundPin = delegate.stack.backgroundContext.object(with: pinId) as? Pin
+            
+            for url in model.urls {
+                delegate.stack.performBackgroundBatchOperation { (workerContext) in
+                    let photo = Photo(photoUrl: url, context: workerContext)
+                    photo.pin = backgroundPin
+                    
+                }
+            }
         }
-        //TODO: Check for photos already loaded
+
+    }
+    
+    func loadPhotos(completionHandlerForLoadPhotos: @escaping () -> () ) {
         
-        currentPage += 1
+        model.prepareForRetrievingPhotos(fetchedResultsController: fetchedResultsController)
         
-        if currentPage > numberOfPages {
-            currentPage = 1
-        }
-        
-        FlickrClient.shared.retrieve(picturesFor: pin, picturesAt: currentPage) { (response) in
+        FlickrClient.shared.retrieve(picturesFor: pin, picturesAt: model.currentPage) { [weak self] (response) in
+            
+            guard let this = self else {
+                print("No PhotoViewController set")
+                return
+                
+            }
+            
             switch response {
             case .Failure(let errorMessage):
                 print(errorMessage)
             //TODO: Display error
-            case .Success(let urls, let numberOfPages, let perPage):
+            case .Success(let urls, let numberOfPages, _):
                 
                 if urls.isEmpty {
-                    print("No Pictures Found")
-                    self.perPage = 0
+                    this.collectionViewLabel.isHidden = false
                     return
                     //TODO: Display No Pictures Found message
                 }
                 
-                self.numberOfPages = numberOfPages
-                self.perPage = perPage
+                this.model.numberOfItemsInCollectionView = urls.count
+                this.model.numberOfPages = numberOfPages
+                this.model.urls = urls
                 
-                print("perPage is \(perPage)")
-                
-                self.urls = urls
-                
-                do {
-                    try self.fetchedResultsController?.performFetch()
-                } catch {
-                    print(error)
-                }
-                //TODO: Get photo asyncronously
+                completionHandlerForLoadPhotos()
             }
         }
     }
@@ -124,65 +141,60 @@ class PhotoViewController: CoreDataViewController {
 }
 
 extension PhotoViewController: NSFetchedResultsControllerDelegate {
-        
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
-        
-        let set = IndexSet(integer: sectionIndex)
-        
-        switch (type) {
-        case .insert:
-            photosCollectionView.insertSections(set)
-        case .delete:
-            photosCollectionView.deleteSections(set)
-        default:
-            // irrelevant in our case
-            break
-        }
+    
+    //Refresh arrays that hold index paths of changed items
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        itemsToInsert = [IndexPath]()
+        itemsToDelete = [IndexPath]()
+        itemsToUpdate = [IndexPath]()
     }
     
+    //Add index paths to array for corresponding change type
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         
         switch type {
         case .insert:
-            photosCollectionView.reloadItems(at: [newIndexPath!])
+            itemsToInsert.append(newIndexPath!)
         case .delete:
-            photosCollectionView.deleteItems(at: [indexPath!])
+            itemsToDelete.append(indexPath!)
         case .update:
-            photosCollectionView.reloadItems(at: [indexPath!])
+            itemsToUpdate.append(indexPath!)
         case .move:
-            photosCollectionView.deleteItems(at: [indexPath!])
-            photosCollectionView.insertItems(at: [newIndexPath!])
+            print("A move shouldn't have happened...")
+            break
         }
+    }
+    
+    //When changes are finished, batch perform updates for CollectionView
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        photosCollectionView.performBatchUpdates({ 
+            for indexPath in self.itemsToInsert {
+                self.photosCollectionView.insertItems(at: [indexPath])
+            }
+            
+            for indexPath in self.itemsToDelete {
+                self.photosCollectionView.deleteItems(at: [indexPath])
+            }
+            
+            for indexPath in self.itemsToUpdate {
+                self.photosCollectionView.reloadItems(at: [indexPath])
+            }
+
+        }, completion: nil)
     }
 }
 
 extension PhotoViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        guard let sections = fetchedResultsController?.sections?.count else {
-            print("numberofsections returned zero")
-            return 0
-        }
         
-        print("There are \(sections) sections")
-        return sections
+        return 1
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        guard let perPage = perPage else {
-            return 0
-        }
+        return fetchedResultsController?.sections?[0].numberOfObjects ?? 0
         
-        print(perPage)
-        
-        if perPage == 0 {
-            collectionViewLabel.isHidden = false
-            return 0
-            //TODO: Display "No data"
-        } else {
-            return perPage
-        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -195,19 +207,25 @@ extension PhotoViewController: UICollectionViewDelegate, UICollectionViewDataSou
             return UICollectionViewCell()
         }
         
-        if hasPhotos {
+        if (fetchedResultsController?.sections?[0].numberOfObjects)! >= indexPath.item {
             guard let photo = fetchedResultsController?.object(at: indexPath) as? Photo else {
                 fatalError("Could not get photo from fetched results contrtoller at \(indexPath)")
             }
             
-            cell.imageView.image = UIImage(data: photo.photo! as Data)
+            if let data = photo.photo as Data? {
+                cell.imageView.image = UIImage(data: data)
+            } else {
+                cell.backgroundView = PhotoActivityIndicator().getActivityIndicator()
+            }
             
         } else {
             cell.backgroundView = PhotoActivityIndicator().getActivityIndicator()
         }
         
         return cell
+
     }
+    
 }
 
 extension PhotoViewController: MKMapViewDelegate {
@@ -220,7 +238,7 @@ extension PhotoViewController: MKMapViewDelegate {
         let span = MKCoordinateSpanMake(0.5, 0.5)
         let region = MKCoordinateRegion(center: pin.coordinate, span: span)
         
-        mapView.setRegion(region, animated: true)
+        mapView.setRegion(region, animated: false)
         
         mapView.addAnnotation(pin)
     }

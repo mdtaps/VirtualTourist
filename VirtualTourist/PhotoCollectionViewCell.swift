@@ -10,6 +10,11 @@ import UIKit
 
 class PhotoCollectionViewCell: UICollectionViewCell {
     
-    @IBOutlet weak var imageView: UIImageView!     
+    @IBOutlet weak var imageView: UIImageView!
+    
+    override func prepareForReuse() {
+        self.imageView.image = nil
+        self.backgroundView = PhotoActivityIndicator().getActivityIndicator()
+    }
     
 }

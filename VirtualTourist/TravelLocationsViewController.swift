@@ -37,19 +37,7 @@ class TravelLocationsViewController: CoreDataViewController, PinDelegate {
         fetchedResultsController?.delegate = self
         pinModel.delegate = self
     }
-  
-    //TODO: Figure out if I need this
-//    override func viewWillDisappear(_ animated: Bool) {
-//        super.viewWillAppear(animated)
-//        
-//        fetchedResultsController?.delegate = nil
-//        
-//    }
-//    
-//    override func viewWillAppear(_ animated: Bool) {
-//        fetchedResultsController?.delegate = self
-//    }
-    
+      
     //MARK: Actions
     @IBAction func longPress(_ gestureRecognizer: UIGestureRecognizer) {
         

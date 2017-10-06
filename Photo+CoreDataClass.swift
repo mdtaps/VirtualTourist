@@ -11,13 +11,20 @@ import CoreData
 
 @objc(Photo)
 public class Photo: NSManagedObject {
-    convenience init(photoUrl url: URL, context: NSManagedObjectContext) {
+    convenience init(photoUrl url: URL? = nil, context: NSManagedObjectContext) {
+        
+        let photoData: NSData?
+        
+        if let url = url {
+            photoData = NSData(contentsOf: url)
+        } else {
+            photoData = nil
+        }
         
         if let entity = NSEntityDescription.entity(forEntityName: Constants.EntityNames.Photo,
-                                                   in: context),
-            let photo = NSData(contentsOf: url) {
+                                                   in: context) {
             self.init(entity: entity, insertInto: context)
-            self.photo = photo
+            self.photo = photoData
             self.creationDate = NSDate(timeIntervalSinceNow: 0)
             
         } else {

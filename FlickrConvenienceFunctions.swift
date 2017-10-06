@@ -22,12 +22,6 @@ extension FlickrClient {
         populatePin(latitude: pin.coordinate.latitude, longitude: pin.coordinate.longitude, page: pageNumber) { (result) in
             
             completionHanderForRetrieve(result)
-
-                //TODO: Return success or failure
-                /*      populatePhoto() {
-                 if success, start loading photos
-                 if failure, populate ui alert with error message
-                 */
         }
     }
     

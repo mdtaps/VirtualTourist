@@ -2,7 +2,7 @@
 //  Pin+CoreDataProperties.swift
 //  VirtualTourist
 //
-//  Created by Mark Tapia on 8/21/17.
+//  Created by Mark Tapia on 9/27/17.
 //  Copyright © 2017 Mark Tapia. All rights reserved.
 //
 
