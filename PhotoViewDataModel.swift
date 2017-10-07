@@ -22,15 +22,13 @@ class PhotoDataModel {
             return
         }
         
-        clearData(fetchedResultsController: fetchedResultsController)
+        clearData(of: fetchedResultsController)
         setCurrentPage()
         
     }
     
-    func clearData(fetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>) {
-        
-        self.numberOfItemsInCollectionView = 0
-        
+    func clearData(of fetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>) {
+                
         if let objects = fetchedResultsController.fetchedObjects as? [NSManagedObject] {
             fetchedResultsController.managedObjectContext.performAndWait {
                 for object in objects {
@@ -39,6 +37,7 @@ class PhotoDataModel {
                 }
                 
             }
+            
             
         }
         

@@ -24,7 +24,7 @@ class PhotoViewController: CoreDataViewController {
     var model = PhotoDataModel()
     var mapModel: PhotoMapModel?
     
-    var itemsToInsert = [IndexPath]()
+    var itemsToReload = [IndexPath]()
     var itemsToDelete = [IndexPath]()
     var itemsToUpdate = [IndexPath]()
     
@@ -56,37 +56,21 @@ class PhotoViewController: CoreDataViewController {
     }
     
     func createPhotoItems() {
-        guard let objects = fetchedResultsController?.fetchedObjects as? [Photo] else {
-            print("No FRC in retreivePicturesFor")
+        photosCollectionView.reloadData()
+        
+        guard let pinId = pin?.objectID else {
+            print("No pin found while retreiving pictures")
             return
         }
         
-        if objects.count > 0 {
-            print("The number of objects being filled with urls is \(objects.count)")
-            
-            for (object, url) in zip(objects, model.urls) {
-                object.photo = NSData(contentsOf: url)
+        let backgroundPin = delegate.stack.backgroundContext.object(with: pinId) as? Pin
+        
+        for url in self.model.urls {
+            delegate.stack.performBackgroundBatchOperation { (workerContext) in
+                let photo = Photo(photoUrl: url, context: workerContext)
+                photo.pin = backgroundPin
             }
-            
-            DispatchQueue.main.async {
-                self.photosCollectionView.reloadData()
-            }
-            
-        } else {
-            guard let pinId = pin?.objectID else {
-                print("No pin found while retreiving pictures")
-                return
-            }
-            
-            let backgroundPin = delegate.stack.backgroundContext.object(with: pinId) as? Pin
-            
-            for url in model.urls {
-                delegate.stack.performBackgroundBatchOperation { (workerContext) in
-                    let photo = Photo(photoUrl: url, context: workerContext)
-                    photo.pin = backgroundPin
-                    
-                }
-            }
+        
         }
 
     }
@@ -114,7 +98,6 @@ class PhotoViewController: CoreDataViewController {
                     return
                     //TODO: Display No Pictures Found message
                 }
-                
                 this.model.numberOfItemsInCollectionView = urls.count
                 this.model.numberOfPages = numberOfPages
                 this.model.urls = urls
@@ -144,7 +127,7 @@ extension PhotoViewController: NSFetchedResultsControllerDelegate {
     
     //Refresh arrays that hold index paths of changed items
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        itemsToInsert = [IndexPath]()
+        itemsToReload = [IndexPath]()
         itemsToDelete = [IndexPath]()
         itemsToUpdate = [IndexPath]()
     }
@@ -154,7 +137,7 @@ extension PhotoViewController: NSFetchedResultsControllerDelegate {
         
         switch type {
         case .insert:
-            itemsToInsert.append(newIndexPath!)
+            itemsToReload.append(newIndexPath!)
         case .delete:
             itemsToDelete.append(indexPath!)
         case .update:
@@ -168,19 +151,25 @@ extension PhotoViewController: NSFetchedResultsControllerDelegate {
     //When changes are finished, batch perform updates for CollectionView
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         photosCollectionView.performBatchUpdates({ 
-            for indexPath in self.itemsToInsert {
-                self.photosCollectionView.insertItems(at: [indexPath])
+            for indexPath in self.itemsToReload {
+                self.photosCollectionView.reloadItems(at: [indexPath])
             }
             
             for indexPath in self.itemsToDelete {
+                print("Delete called")
                 self.photosCollectionView.deleteItems(at: [indexPath])
+                
             }
             
+            self.model.numberOfItemsInCollectionView -= self.itemsToDelete.count
+        
             for indexPath in self.itemsToUpdate {
                 self.photosCollectionView.reloadItems(at: [indexPath])
             }
 
-        }, completion: nil)
+        }, completion: { (_) in
+            self.photosCollectionView.reloadData()
+        })
     }
 }
 
@@ -193,7 +182,9 @@ extension PhotoViewController: UICollectionViewDelegate, UICollectionViewDataSou
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        return fetchedResultsController?.sections?[0].numberOfObjects ?? 0
+        print("Number of items in section called, there are \(model.numberOfItemsInCollectionView)")
+        
+        return model.numberOfItemsInCollectionView
         
     }
     
@@ -207,7 +198,7 @@ extension PhotoViewController: UICollectionViewDelegate, UICollectionViewDataSou
             return UICollectionViewCell()
         }
         
-        if (fetchedResultsController?.sections?[0].numberOfObjects)! >= indexPath.item {
+        if (fetchedResultsController?.sections?[0].numberOfObjects)! > indexPath.item {
             guard let photo = fetchedResultsController?.object(at: indexPath) as? Photo else {
                 fatalError("Could not get photo from fetched results contrtoller at \(indexPath)")
             }
