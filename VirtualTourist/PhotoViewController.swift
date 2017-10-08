@@ -173,7 +173,7 @@ extension PhotoViewController: NSFetchedResultsControllerDelegate {
     }
 }
 
-extension PhotoViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+extension PhotoViewController: UICollectionViewDataSource {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         
@@ -205,6 +205,18 @@ extension PhotoViewController: UICollectionViewDelegate, UICollectionViewDataSou
             
             if let data = photo.photo as Data? {
                 cell.imageView.image = UIImage(data: data)
+                cell.backgroundView = nil
+                
+                dump(model.itemsSelectedToDelete)
+                
+                if model.itemsSelectedToDelete.contains(indexPath) {
+                    cell.imageView.alpha = 0.25
+                    
+                } else {
+                    cell.imageView.alpha = 1
+                    
+                }
+                
             } else {
                 cell.backgroundView = PhotoActivityIndicator().getActivityIndicator()
             }
@@ -219,9 +231,25 @@ extension PhotoViewController: UICollectionViewDelegate, UICollectionViewDataSou
     
 }
 
+extension PhotoViewController: UICollectionViewDelegate {
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if model.itemsSelectedToDelete.contains(indexPath) {
+            model.itemsSelectedToDelete = model.itemsSelectedToDelete.filter { $0 != indexPath }
+            
+        } else {
+            model.itemsSelectedToDelete.append(indexPath)
+            
+        }
+        
+        photosCollectionView.reloadItems(at: [indexPath])
+    }
+    
+}
+
 extension PhotoViewController: MKMapViewDelegate {
     
-    func mapViewDidFinishRenderingMap(_ mapView: MKMapView, fullyRendered: Bool) {
+    func mapViewWillStartLoadingMap(_ mapView: MKMapView) {
         guard let pin = pin else {
             fatalError("No pin set for viewDidLoad")
         }

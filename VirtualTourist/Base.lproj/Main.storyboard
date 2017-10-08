@@ -121,7 +121,7 @@
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="u6H-RR-DD6"/>
                                 </constraints>
-                                <state key="normal" title="Button"/>
+                                <state key="normal" title="New Collection"/>
                                 <connections>
                                     <action selector="reloadPhotos" destination="vcr-KC-tlF" eventType="touchUpInside" id="4Gd-6j-whL"/>
                                 </connections>

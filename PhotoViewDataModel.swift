@@ -15,6 +15,7 @@ class PhotoDataModel {
     var numberOfPages = 1
     var urls = [URL]()
     var numberOfItemsInCollectionView = 0
+    var itemsSelectedToDelete = [IndexPath]()
     
     func prepareForRetrievingPhotos(fetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>?) {
         guard let fetchedResultsController = fetchedResultsController else {
