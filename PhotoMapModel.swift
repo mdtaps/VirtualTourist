@@ -17,7 +17,7 @@ class PhotoMapModel: NSObject, MKMapViewDelegate {
         self.pin = pin
     }
     
-    func mapViewDidFinishRenderingMap(_ mapView: MKMapView, fullyRendered: Bool) {
+    func mapViewWillStartRenderingMap(_ mapView: MKMapView) {
         guard let pin = pin else {
             fatalError("No pin set for viewDidLoad")
         }

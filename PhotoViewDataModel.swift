@@ -15,12 +15,14 @@ class PhotoDataModel {
     var numberOfPages = 1
     var urls = [URL]()
     var numberOfItemsInCollectionView = 0
-    var itemsSelectedToDelete = [IndexPath]()
+    var indexPathsOfItemsSelectedToDelete = [IndexPath]()
+    var buttonMode = ButtonMode.ReloadItems
     
     func prepareForRetrievingPhotos(fetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>?) {
         guard let fetchedResultsController = fetchedResultsController else {
             print("No FRC set in loadPhotos")
             return
+            
         }
         
         clearData(of: fetchedResultsController)
@@ -29,7 +31,6 @@ class PhotoDataModel {
     }
     
     func clearData(of fetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>) {
-                
         if let objects = fetchedResultsController.fetchedObjects as? [NSManagedObject] {
             fetchedResultsController.managedObjectContext.performAndWait {
                 for object in objects {
@@ -44,7 +45,29 @@ class PhotoDataModel {
         
     }
     
-    func setCurrentPage() {
+    func removeSelectedPhotos(fetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>?) {
+        guard let fetchedResultsController = fetchedResultsController else {
+            print("FRC not set in PhotoViewDataModel removePhotos")
+            return
+            
+        }
+        
+        for indexPath in indexPathsOfItemsSelectedToDelete {
+            guard let object = fetchedResultsController.object(at: indexPath) as? NSManagedObject else {
+                print("No valid object at \(indexPath) in removePhotos")
+                continue
+                
+            }
+            
+            fetchedResultsController.managedObjectContext.delete(object)
+            
+        }
+        
+        indexPathsOfItemsSelectedToDelete.removeAll(keepingCapacity: false)
+        
+    }
+        
+    private func setCurrentPage() {
         currentPage += 1
         
         if currentPage > numberOfPages {
@@ -53,4 +76,9 @@ class PhotoDataModel {
 
     }
     
+}
+
+enum ButtonMode: String {
+    case DeleteItems = "Delete Selected Items"
+    case ReloadItems = "New Collection"
 }

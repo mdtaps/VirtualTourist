@@ -37,6 +37,18 @@ class TravelLocationsViewController: CoreDataViewController, PinDelegate {
         fetchedResultsController?.delegate = self
         pinModel.delegate = self
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        fetchedResultsController?.delegate = self
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        fetchedResultsController?.delegate = nil
+    }
       
     //MARK: Actions
     @IBAction func longPress(_ gestureRecognizer: UIGestureRecognizer) {
@@ -113,13 +125,22 @@ extension TravelLocationsViewController: NSFetchedResultsControllerDelegate {
         switch type {
         case .insert:
             mapView.addAnnotation(pin)
+            do {
+                try controller.managedObjectContext.save()
+            } catch {
+                print("Error saving while inserting pin: \(error.localizedDescription)")
+            }
             
         case .delete:
             mapView.removeAnnotation(pin)
+            do {
+                try controller.managedObjectContext.save()
+            } catch {
+                print("Error saving while inserting pin: \(error.localizedDescription)")
+            }
             
         case .update:
-            mapView.removeAnnotation(pin)
-            mapView.addAnnotation(pin)
+            print("We won't do anything on update")
             
         case .move:
             fatalError("You can't move pins!")
@@ -143,7 +164,7 @@ extension TravelLocationsViewController {
         fetchRequest.predicate = predicate
         
         guard let context = fetchedResultsController?.managedObjectContext else {
-            fatalError("No context set in pushing photoVC")
+            fatalError("No FRC set in pushPhotoVC")
         }
         
         let frController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)

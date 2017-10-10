@@ -19,11 +19,15 @@ class PhotoViewController: CoreDataViewController {
     @IBOutlet weak var photosMapView: MKMapView!
     @IBOutlet weak var photosCollectionView: UICollectionView!
     @IBOutlet weak var collectionViewLabel: UILabel!
+    @IBOutlet weak var collectionViewButton: UIButton!
     
+    //MARK: Properties
     var pin: Pin?
     var model = PhotoDataModel()
     var mapModel: PhotoMapModel?
     
+    //Arrays for holding indexPath of items to make changes
+    //on in FetchedResultsController delegate functions
     var itemsToReload = [IndexPath]()
     var itemsToDelete = [IndexPath]()
     var itemsToUpdate = [IndexPath]()
@@ -34,46 +38,44 @@ class PhotoViewController: CoreDataViewController {
         fetchedResultsController?.delegate = self
         mapModel = PhotoMapModel(pin)
         photosMapView.delegate = mapModel
+        
+        collectionViewButton.titleLabel?.text = "New Collection"
         setupCollectionView()
         
+        //If the FRC has objects, reload the collection view
         if let count = fetchedResultsController?.fetchedObjects?.count, count > 0 {
-            print("Items in context at beginning is \(count)")
             model.numberOfItemsInCollectionView = count
             photosCollectionView.reloadData()
+            
+        //If the FRC has no objects, load photos from Flickr
         } else {
-            loadPhotos {
-                self.createPhotoItems()
-
-            }
+            reloadPhotos()
         }
     }
     
-    @IBAction func reloadPhotos() {
+    @IBAction func buttonPressed() {
+        
+        switch model.buttonMode {
+            
+        //If button is in reload mode, reload items
+        case .ReloadItems:
+            reloadPhotos()
+        
+        //If button is in delete mode, remove all the items that have been selected
+        case .DeleteItems:
+            model.removeSelectedPhotos(fetchedResultsController: fetchedResultsController)
+            updateButtonMode()
+        }
+    }
+    
+    //Photo entities are created after the urls are returned from Flickr
+    func reloadPhotos() {
         loadPhotos {
             self.createPhotoItems()
-
+            
         }
     }
-    
-    func createPhotoItems() {
-        photosCollectionView.reloadData()
-        
-        guard let pinId = pin?.objectID else {
-            print("No pin found while retreiving pictures")
-            return
-        }
-        
-        let backgroundPin = delegate.stack.backgroundContext.object(with: pinId) as? Pin
-        
-        for url in self.model.urls {
-            delegate.stack.performBackgroundBatchOperation { (workerContext) in
-                let photo = Photo(photoUrl: url, context: workerContext)
-                photo.pin = backgroundPin
-            }
-        
-        }
 
-    }
     
     func loadPhotos(completionHandlerForLoadPhotos: @escaping () -> () ) {
         
@@ -96,8 +98,8 @@ class PhotoViewController: CoreDataViewController {
                 if urls.isEmpty {
                     this.collectionViewLabel.isHidden = false
                     return
-                    //TODO: Display No Pictures Found message
                 }
+                
                 this.model.numberOfItemsInCollectionView = urls.count
                 this.model.numberOfPages = numberOfPages
                 this.model.urls = urls
@@ -107,18 +109,30 @@ class PhotoViewController: CoreDataViewController {
         }
     }
     
-    func setupCollectionView() {
+    func createPhotoItems() {
+        photosCollectionView.reloadData()
+        
+        guard let pinId = pin?.objectID else {
+            print("No pin found while retreiving pictures")
+            return
+        }
+        
+        let backgroundPin = delegate.stack.backgroundContext.object(with: pinId) as? Pin
+        
+        for url in self.model.urls {
+            delegate.stack.performBackgroundBatchOperation { (workerContext) in
+                let photo = Photo(photoUrl: url, context: workerContext)
+                photo.pin = backgroundPin
+            }
+            
+        }
+        
+    }
+    
+    private func setupCollectionView() {
         photosCollectionView.delegate = self
         photosCollectionView.dataSource = self
-        
-        let layout = UICollectionViewFlowLayout()
-        let width = UIScreen.main.bounds.width
-        layout.sectionInset = UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 5)
-        layout.itemSize = CGSize(width: width / 3 - 10, height: width / 3 - 10)
-        layout.minimumInteritemSpacing = 5
-        layout.minimumLineSpacing = 5
-        photosCollectionView.collectionViewLayout = layout
-        
+        photosCollectionView.setupPhotoCollectionView()
         collectionViewLabel.isHidden = true
     }
 }
@@ -156,7 +170,6 @@ extension PhotoViewController: NSFetchedResultsControllerDelegate {
             }
             
             for indexPath in self.itemsToDelete {
-                print("Delete called")
                 self.photosCollectionView.deleteItems(at: [indexPath])
                 
             }
@@ -182,34 +195,32 @@ extension PhotoViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        print("Number of items in section called, there are \(model.numberOfItemsInCollectionView)")
-        
         return model.numberOfItemsInCollectionView
         
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        //TODO: Display loading wheel
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as? PhotoCollectionViewCell else {
-            
-            //TODO: Show error
             print("We have an error in dequeueing reusable cell")
             return UICollectionViewCell()
         }
         
+        //Only try to load data if the number of items in FRC greater than the item number
+        //If there are fewer items, show a loading wheel
         if (fetchedResultsController?.sections?[0].numberOfObjects)! > indexPath.item {
             guard let photo = fetchedResultsController?.object(at: indexPath) as? Photo else {
-                fatalError("Could not get photo from fetched results contrtoller at \(indexPath)")
+                print("Could not get photo in cellForItemAt indexPath")
+                return cell
             }
             
+            //If the photo at the correct indexPath has data, use that data to load photo and stop wheel
             if let data = photo.photo as Data? {
                 cell.imageView.image = UIImage(data: data)
                 cell.backgroundView = nil
                 
-                dump(model.itemsSelectedToDelete)
-                
-                if model.itemsSelectedToDelete.contains(indexPath) {
+                //If the item is selected to delete, set add transparency to image
+                if model.indexPathsOfItemsSelectedToDelete.contains(indexPath) {
                     cell.imageView.alpha = 0.25
                     
                 } else {
@@ -218,6 +229,7 @@ extension PhotoViewController: UICollectionViewDataSource {
                 }
                 
             } else {
+                //If no data
                 cell.backgroundView = PhotoActivityIndicator().getActivityIndicator()
             }
             
@@ -234,48 +246,34 @@ extension PhotoViewController: UICollectionViewDataSource {
 extension PhotoViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if model.itemsSelectedToDelete.contains(indexPath) {
-            model.itemsSelectedToDelete = model.itemsSelectedToDelete.filter { $0 != indexPath }
+        
+        //When cell selected, if indexPath is contained in itemsSelectedToDelete,
+        //remove that indexPath. Otherwise, add the indexPath
+        if model.indexPathsOfItemsSelectedToDelete.contains(indexPath) {
+            model.indexPathsOfItemsSelectedToDelete = model.indexPathsOfItemsSelectedToDelete.filter { $0 != indexPath }
             
         } else {
-            model.itemsSelectedToDelete.append(indexPath)
+            model.indexPathsOfItemsSelectedToDelete.append(indexPath)
             
         }
+        
+        //Function to update button view
+        updateButtonMode()
         
         photosCollectionView.reloadItems(at: [indexPath])
     }
     
-}
-
-extension PhotoViewController: MKMapViewDelegate {
-    
-    func mapViewWillStartLoadingMap(_ mapView: MKMapView) {
-        guard let pin = pin else {
-            fatalError("No pin set for viewDidLoad")
-        }
+    fileprivate func updateButtonMode() {
         
-        let span = MKCoordinateSpanMake(0.5, 0.5)
-        let region = MKCoordinateRegion(center: pin.coordinate, span: span)
-        
-        mapView.setRegion(region, animated: false)
-        
-        mapView.addAnnotation(pin)
-    }
-    
-    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        
-        let reuseId = "pin"
-        
-        var pinObject = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? MKPinAnnotationView
-        
-        if pinObject == nil {
-            pinObject = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
-            pinObject?.canShowCallout = false
-            pinObject?.animatesDrop = false
-            pinObject?.tintColor = .red
+        if model.indexPathsOfItemsSelectedToDelete.isEmpty {
+            model.buttonMode = .ReloadItems
+            
         } else {
-            pinObject?.annotation = annotation
+            model.buttonMode = .DeleteItems
+            
         }
-        return pinObject
+        
+        collectionViewButton.setTitle(model.buttonMode.rawValue, for: .normal)
     }
+    
 }

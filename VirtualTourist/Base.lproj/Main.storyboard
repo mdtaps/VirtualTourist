@@ -121,9 +121,10 @@
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="u6H-RR-DD6"/>
                                 </constraints>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                 <state key="normal" title="New Collection"/>
                                 <connections>
-                                    <action selector="reloadPhotos" destination="vcr-KC-tlF" eventType="touchUpInside" id="4Gd-6j-whL"/>
+                                    <action selector="buttonPressed" destination="vcr-KC-tlF" eventType="touchUpInside" id="6JW-c5-0Or"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -144,6 +145,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="collectionViewButton" destination="b5w-xj-4Gb" id="O8W-Be-5F8"/>
                         <outlet property="collectionViewLabel" destination="GAI-5x-tBh" id="OYH-9j-49X"/>
                         <outlet property="photosCollectionView" destination="PX9-CV-j0I" id="7G3-wn-GP4"/>
                         <outlet property="photosMapView" destination="Zx1-Rs-Bbr" id="WGW-HD-L8K"/>
