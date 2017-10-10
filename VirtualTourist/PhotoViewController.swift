@@ -27,7 +27,8 @@ class PhotoViewController: CoreDataViewController {
     var mapModel: PhotoMapModel?
     
     //Arrays for holding indexPath of items to make changes
-    //on in FetchedResultsController delegate functions
+    //on in FetchedResultsController delegate functions. Code from
+    //ColorCollection app found in Udacity Forums
     var itemsToReload = [IndexPath]()
     var itemsToDelete = [IndexPath]()
     var itemsToUpdate = [IndexPath]()
@@ -162,7 +163,8 @@ extension PhotoViewController: NSFetchedResultsControllerDelegate {
         }
     }
     
-    //When changes are finished, batch perform updates for CollectionView
+    //When changes are finished, batch perform updates for CollectionView. Code from
+    //ColorCollection project on Udacity forums
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         photosCollectionView.performBatchUpdates({ 
             for indexPath in self.itemsToReload {
