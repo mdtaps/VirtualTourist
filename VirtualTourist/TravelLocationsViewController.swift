@@ -125,19 +125,10 @@ extension TravelLocationsViewController: NSFetchedResultsControllerDelegate {
         switch type {
         case .insert:
             mapView.addAnnotation(pin)
-            do {
-                try controller.managedObjectContext.save()
-            } catch {
-                print("Error saving while inserting pin: \(error.localizedDescription)")
-            }
-            
+            delegate.stack.save()
         case .delete:
             mapView.removeAnnotation(pin)
-            do {
-                try controller.managedObjectContext.save()
-            } catch {
-                print("Error saving while inserting pin: \(error.localizedDescription)")
-            }
+            delegate.stack.save()
             
         case .update:
             print("We won't do anything on update")

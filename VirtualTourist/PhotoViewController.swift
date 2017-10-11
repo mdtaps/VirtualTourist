@@ -111,7 +111,10 @@ class PhotoViewController: CoreDataViewController {
     }
     
     func createPhotoItems() {
-        photosCollectionView.reloadData()
+        DispatchQueue.main.async {
+            self.photosCollectionView.reloadData()
+            
+        }
         
         guard let pinId = pin?.objectID else {
             print("No pin found while retreiving pictures")
@@ -184,6 +187,7 @@ extension PhotoViewController: NSFetchedResultsControllerDelegate {
 
         }, completion: { (_) in
             self.photosCollectionView.reloadData()
+            self.delegate.stack.save()
         })
     }
 }
