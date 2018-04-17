@@ -150,6 +150,7 @@
 				F4533BE11F5CCE550059787F /* FlickrConvenienceFunctions.swift */,
 				F4533BDE1F5CB1CA0059787F /* GeneralNetworkingClient.swift */,
 				F4A283C71F4BECE700F043EA /* Constants.swift */,
+				F4533BE51F5FDD870059787F /* APIKeyPropertyList.plist */,
 			);
 			name = Networking;
 			sourceTree = "<group>";
@@ -215,7 +216,6 @@
 				F4533BD71F57D9950059787F /* CoreDataModel */,
 				F4FF5B6F1F8B3536006DE169 /* PinViewModel */,
 				F4FF5B6E1F8B3523006DE169 /* PhotoViewModel */,
-				F4533BE51F5FDD870059787F /* APIKeyPropertyList.plist */,
 				F4533BE01F5CB1F90059787F /* Networking */,
 			);
 			name = Model;

@@ -14,10 +14,8 @@ class CoreDataViewController: UIViewController {
     let delegate = UIApplication.shared.delegate as! AppDelegate
     
     var fetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>? {
-        
         didSet {
             if let fc = fetchedResultsController {
-                
                 do {
                     try fc.performFetch()
                 } catch let e as NSError {
