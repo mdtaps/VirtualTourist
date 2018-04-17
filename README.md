@@ -34,8 +34,9 @@ git clone https://github.com/mdtaps/VirtualTourist
 Get an API Key from Flickr here: https://www.flickr.com/services/apps/create/apply
 
 Create a file in your project named `APIKeyPropertyList.plist` and add a key/value pair to the list.
-	* Under "key", put the String `FlickrAPIKey`
-	* Under "value", put the API key you got from Flickr
+
+* Under "key", put the String `FlickrAPIKey`
+* Under "value", put the API key you got from Flickr
 
 
 ## Built With
